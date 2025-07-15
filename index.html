@@ -1,0 +1,1748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Padel Americano</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #8B5CF6; /* Purple for headers */
+      --accent-color: #FCD34D; /* Yellow for buttons */
+      --light-bg-color: #F9FAFB;
+      --card-bg-color: #FFFFFF;
+      --border-color: #E5E7EB;
+      --text-color: #1F2937;
+      --text-light: #6B7280;
+      --success-color: #10B981;
+      --danger-color: #EF4444;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--light-bg-color);
+      color: var(--text-color);
+      min-height: 100vh;
+      position: relative;
+      padding-bottom: 60px; /* Space for bottom navigation */
+    }
+
+    /* Header Styles */
+    .app-header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 1rem;
+      text-align: center;
+      font-weight: bold;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-title {
+      flex: 1;
+      text-align: center;
+    }
+
+    .header-action {
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 0.5rem;
+    }
+
+    /* Container Styles */
+    .container {
+      padding: 1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Card Styles */
+    .card {
+      background-color: var(--card-bg-color);
+      border-radius: 12px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    /* Button Styles */
+    .btn {
+      background-color: var(--accent-color);
+      color: var(--text-color);
+      border: none;
+      border-radius: 8px;
+      padding: 0.75rem 1.5rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: inline-block;
+      text-align: center;
+      transition: background-color 0.2s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: #F59E0B;
+    }
+
+    .btn-block {
+      display: block;
+      width: 100%;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .btn-danger {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .btn-success {
+      background-color: var(--success-color);
+      color: white;
+    }
+
+    .btn-small {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+    }
+
+    /* Form Styles */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+
+    /* Navigation Styles */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: white;
+      display: flex;
+      border-top: 1px solid var(--border-color);
+      z-index: 100;
+    }
+
+    .nav-item {
+      flex: 1;
+      text-align: center;
+      padding: 0.75rem;
+      color: var(--text-light);
+      text-decoration: none;
+      font-size: 0.875rem;
+    }
+
+    .nav-item.active {
+      color: var(--primary-color);
+    }
+
+    .nav-icon {
+      display: block;
+      font-size: 1.25rem;
+      margin-bottom: 0.25rem;
+    }
+
+    /* Match Card Styles */
+    .match-card {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background-color: white;
+    }
+
+    .match-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .match-title {
+      font-weight: bold;
+    }
+
+    .match-teams {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .match-team {
+      flex: 1;
+      padding: 0.5rem;
+      text-align: center;
+      border-radius: 8px;
+    }
+
+    .match-score {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .score-input {
+      width: 80px;
+      text-align: center;
+      font-weight: bold;
+      padding: 0.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1.2rem;
+    }
+
+    .score-display {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: var(--text-light);
+    }
+
+    /* Rest Card Styles */
+    .rest-card {
+      border: 2px dashed var(--border-color);
+      border-radius: 12px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      background-color: #FEF3C7;
+      text-align: center;
+    }
+
+    .rest-player {
+      font-weight: bold;
+      color: var(--text-color);
+    }
+
+    .rest-bonus {
+      font-size: 0.875rem;
+      color: var(--text-light);
+      margin-top: 0.25rem;
+    }
+
+    /* Screens */
+    .screen {
+      display: none;
+    }
+
+    .screen.active {
+      display: block;
+    }
+
+    /* Tournament List Styles */
+    .tournament-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 1rem;
+      background-color: white;
+      cursor: pointer;
+    }
+
+    .tournament-item:hover {
+      background-color: var(--light-bg-color);
+    }
+
+    .tournament-info {
+      flex: 1;
+    }
+
+    .tournament-name {
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+
+    .tournament-meta {
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+
+    .tournament-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    /* Leaderboard Styles */
+    .leaderboard-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .rank {
+      font-weight: bold;
+      width: 30px;
+    }
+
+    .player-name {
+      flex: 1;
+    }
+
+    .player-score {
+      font-weight: bold;
+      width: 50px;
+      text-align: right;
+    }
+
+    .screen-title {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      font-weight: bold;
+    }
+
+    .center-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      text-align: center;
+    }
+
+    .courts-container {
+      margin-bottom: 1rem;
+    }
+
+    .rounds-nav {
+      display: flex;
+      overflow-x: auto;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      align-items: center;
+    }
+
+    .round-tab {
+      padding: 0.5rem 1rem;
+      margin-right: 0.5rem;
+      background-color: var(--border-color);
+      border-radius: 1rem;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .round-tab.active {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .add-round-btn {
+      padding: 0.5rem 1rem;
+      background-color: var(--success-color);
+      color: white;
+      border: none;
+      border-radius: 1rem;
+      cursor: pointer;
+      white-space: nowrap;
+      margin-left: 0.5rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+    }
+
+    .team-name {
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+
+    .team-players {
+      font-size: 0.875rem;
+      color: var(--text-light);
+    }
+
+    .save-score-btn {
+      margin-top: 1rem;
+    }
+
+    .new-tournament-logo {
+      width: 150px;
+      height: 150px;
+      background-color: var(--primary-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 2rem;
+    }
+
+    .new-tournament-logo i {
+      font-size: 4rem;
+      color: white;
+    }
+
+    .sync-status {
+      padding: 0.5rem;
+      text-align: center;
+      background-color: var(--success-color);
+      color: white;
+      font-size: 0.875rem;
+    }
+
+    .sync-status.offline {
+      background-color: var(--danger-color);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: white;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 400px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-light);
+    }
+
+    .export-section {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .export-buttons {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .share-link {
+      margin-top: 1rem;
+      padding: 0.5rem;
+      background-color: var(--light-bg-color);
+      border-radius: 8px;
+      font-size: 0.875rem;
+      word-break: break-all;
+    }
+
+    .player-count-range {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .player-count-display {
+      font-weight: bold;
+      min-width: 30px;
+      text-align: center;
+    }
+
+    .rest-info {
+      background-color: #FEF3C7;
+      padding: 0.5rem;
+      border-radius: 8px;
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Sync Status -->
+  <div id="syncStatus" class="sync-status">
+    <i class="fas fa-wifi"></i> Connected
+  </div>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <button id="backBtn" class="header-action" style="display: none;">
+      <i class="fas fa-arrow-left"></i>
+    </button>
+    <div class="header-title">Padel Americano</div>
+    <button id="menuBtn" class="header-action">
+      <i class="fas fa-bars"></i>
+    </button>
+  </header>
+
+  <!-- Tournament List Screen -->
+  <div id="tournamentListScreen" class="screen active">
+    <div class="container">
+      <h2 class="screen-title">My Tournaments</h2>
+      <button id="newTournamentBtn" class="btn btn-block" style="margin-bottom: 1rem;">
+        <i class="fas fa-plus"></i> New Tournament
+      </button>
+      <div id="tournamentsList">
+        <!-- Tournament list will be populated here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Setup Screen -->
+  <div id="setupScreen" class="screen">
+    <div class="container">
+      <h2 class="screen-title">New Tournament Setup</h2>
+      <div class="card">
+        <form id="setupForm">
+          <div class="form-group">
+            <label class="form-label">Tournament Name</label>
+            <input type="text" id="tournamentName" class="form-control" placeholder="Enter tournament name" required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Number of Players: <span id="playerCountDisplay">4</span></label>
+            <div class="player-count-range">
+              <span>4</span>
+              <input type="range" id="playerCount" min="4" max="14" value="4" class="form-control" style="flex: 1;">
+              <span>14</span>
+            </div>
+            <div class="rest-info" id="restInfo">
+              With 4 players, all players will play every round.
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Number of Courts</label>
+            <select id="courtCount" class="form-control">
+              <option value="1" selected>1 court</option>
+              <option value="2">2 courts</option>
+              <option value="3">3 courts</option>
+              <option value="4">4 courts</option>
+              <option value="5">5 courts</option>
+              <option value="6">6 courts</option>
+            </select>
+          </div>
+          
+          <div id="playerInputs">
+            <!-- Player inputs will be generated here -->
+          </div>
+          
+          <button type="submit" class="btn btn-block">Start Tournament</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rounds Screen -->
+  <div id="roundsScreen" class="screen">
+    <div class="container">
+      <div class="rounds-nav" id="roundsNav">
+        <!-- Round tabs will be generated here -->
+      </div>
+      
+      <div id="matchesContainer">
+        <!-- Matches will be displayed here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Leaderboard Screen -->
+  <div id="leaderboardScreen" class="screen">
+    <div class="container">
+      <h2 class="screen-title">Leaderboard</h2>
+      <div class="card">
+        <div id="leaderboardList">
+          <!-- Leaderboard items will be generated here -->
+        </div>
+        
+        <div class="export-section">
+          <h4>Export Results</h4>
+          <div class="export-buttons">
+            <button id="exportPDF" class="btn btn-small btn-primary">
+              <i class="fas fa-file-pdf"></i> PDF
+            </button>
+            <button id="exportPNG" class="btn btn-small btn-success">
+              <i class="fas fa-image"></i> PNG
+            </button>
+            <button id="shareLink" class="btn btn-small">
+              <i class="fas fa-share"></i> Share Link
+            </button>
+          </div>
+          <div id="shareLinkDisplay" class="share-link" style="display: none;">
+            <!-- Share link will be displayed here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="#" id="roundsTab" class="nav-item">
+      <i class="fas fa-calendar-alt nav-icon"></i>
+      <span>Rounds</span>
+    </a>
+    <a href="#" id="leaderboardTab" class="nav-item">
+      <i class="fas fa-trophy nav-icon"></i>
+      <span>Leaderboard</span>
+    </a>
+  </nav>
+
+  <!-- Canvas for export (hidden) -->
+  <canvas id="exportCanvas" style="display: none;"></canvas>
+
+  <!-- Firebase SDK -->
+  <script src="https://lib.youware.com/youware-lib-editor.1752562065.js" id="yourware-lib"></script><script type="module">
+    // Import Firebase functions
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+    import { getDatabase, ref, set, onValue, off } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
+
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyDymQBpzDKLOyMAiAHTY-lFcPGc2zuMgbg",
+      authDomain: "paddle-e3c7f.firebaseapp.com",
+      databaseURL: "https://paddle-e3c7f-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "paddle-e3c7f",
+      storageBucket: "paddle-e3c7f.firebasestorage.app",
+      messagingSenderId: "270747215285",
+      appId: "1:270747215285:web:9068d56bdafe6d21a7e5fc",
+      measurementId: "G-SH67C8F715"
+    };
+
+    // Initialize Firebase
+    let database = null;
+    let isOnline = false;
+    try {
+      const app = initializeApp(firebaseConfig);
+      database = getDatabase(app);
+      isOnline = true;
+      console.log("Firebase initialized successfully");
+      updateSyncStatus(true);
+    } catch (error) {
+      console.warn("Firebase initialization failed:", error);
+      console.log("App will work in offline mode using localStorage");
+      isOnline = false;
+      updateSyncStatus(false);
+    }
+
+    // Make Firebase functions globally available
+    window.firebaseDB = database;
+    window.firebaseRef = ref;
+    window.firebaseSet = set;
+    window.firebaseOnValue = onValue;
+    window.firebaseOff = off;
+    window.isFirebaseOnline = isOnline;
+  </script>
+
+  <script>
+    // App State
+    const appState = {
+      currentScreen: 'tournamentListScreen',
+      currentTournament: null,
+      tournaments: {},
+      navigation: {
+        activeTab: 'roundsTab'
+      }
+    };
+
+    // DOM Elements
+    const screens = {
+      tournamentListScreen: document.getElementById('tournamentListScreen'),
+      setupScreen: document.getElementById('setupScreen'),
+      roundsScreen: document.getElementById('roundsScreen'),
+      leaderboardScreen: document.getElementById('leaderboardScreen')
+    };
+
+    const navTabs = {
+      roundsTab: document.getElementById('roundsTab'),
+      leaderboardTab: document.getElementById('leaderboardTab')
+    };
+
+    // Update sync status indicator
+    function updateSyncStatus(online) {
+      const syncStatus = document.getElementById('syncStatus');
+      if (online) {
+        syncStatus.className = 'sync-status';
+        syncStatus.innerHTML = '<i class="fas fa-wifi"></i> Connected';
+      } else {
+        syncStatus.className = 'sync-status offline';
+        syncStatus.innerHTML = '<i class="fas fa-wifi-slash"></i> Offline';
+      }
+    }
+
+    // Function to change the current screen
+    function showScreen(screenId) {
+      // Hide all screens
+      Object.values(screens).forEach(screen => {
+        screen.classList.remove('active');
+      });
+      
+      // Show the requested screen
+      screens[screenId].classList.add('active');
+      
+      // Update app state
+      appState.currentScreen = screenId;
+      
+      // Update header and navigation
+      updateHeader(screenId);
+      updateNavigation(screenId);
+    }
+
+    // Update header based on current screen
+    function updateHeader(screenId) {
+      const backBtn = document.getElementById('backBtn');
+      const menuBtn = document.getElementById('menuBtn');
+      
+      if (screenId === 'tournamentListScreen') {
+        backBtn.style.display = 'none';
+        menuBtn.style.display = 'block';
+      } else if (screenId === 'roundsScreen' || screenId === 'leaderboardScreen') {
+        backBtn.style.display = 'block';
+        menuBtn.style.display = 'none';
+      } else {
+        backBtn.style.display = 'block';
+        menuBtn.style.display = 'none';
+      }
+    }
+
+    // Update navigation visibility
+    function updateNavigation(screenId) {
+      const bottomNav = document.querySelector('.bottom-nav');
+      if (screenId === 'roundsScreen' || screenId === 'leaderboardScreen') {
+        bottomNav.style.display = 'flex';
+        
+        // Update active tab
+        if (screenId === 'roundsScreen') {
+          setActiveTab('roundsTab');
+        } else if (screenId === 'leaderboardScreen') {
+          setActiveTab('leaderboardTab');
+        }
+      } else {
+        bottomNav.style.display = 'none';
+      }
+    }
+
+    // Function to set the active navigation tab
+    function setActiveTab(tabId) {
+      // Remove active class from all tabs
+      Object.values(navTabs).forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Add active class to the selected tab
+      navTabs[tabId].classList.add('active');
+      
+      // Update app state
+      appState.navigation.activeTab = tabId;
+    }
+
+    // Update player count display and rest info
+    function updatePlayerCountDisplay() {
+      const playerCount = parseInt(document.getElementById('playerCount').value);
+      const display = document.getElementById('playerCountDisplay');
+      const restInfo = document.getElementById('restInfo');
+      
+      display.textContent = playerCount;
+      
+      const playersPerMatch = 4;
+      const restingPlayers = playerCount % playersPerMatch;
+      
+      if (restingPlayers === 0) {
+        restInfo.textContent = `With ${playerCount} players, all players will play every round.`;
+      } else {
+        restInfo.textContent = `With ${playerCount} players, ${restingPlayers} player(s) will rest each round and receive 10 bonus points per rest.`;
+      }
+    }
+
+    // Generate player input fields
+    function generatePlayerInputs(count) {
+      const container = document.getElementById('playerInputs');
+      container.innerHTML = '';
+      
+      for (let i = 0; i < count; i++) {
+        const formGroup = document.createElement('div');
+        formGroup.className = 'form-group';
+        
+        const label = document.createElement('label');
+        label.className = 'form-label';
+        label.htmlFor = `player${i+1}`;
+        label.textContent = `Player ${i+1}`;
+        
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'form-control';
+        input.id = `player${i+1}`;
+        input.name = `player${i+1}`;
+        input.placeholder = `Enter player ${i+1} name`;
+        input.required = true;
+        
+        formGroup.appendChild(label);
+        formGroup.appendChild(input);
+        container.appendChild(formGroup);
+      }
+    }
+
+    // Enhanced match generation with rest system
+    function generateMatches(players, roundNumber, restingPlayers = []) {
+      const matches = [];
+      const playersPerMatch = 4;
+      
+      // Get players who are not resting this round
+      const activePlayers = players.filter(p => !restingPlayers.includes(p.id));
+      
+      // Generate matches from active players
+      for (let i = 0; i < activePlayers.length; i += playersPerMatch) {
+        if (i + 3 < activePlayers.length) {
+          const courtNumber = Math.floor(i / playersPerMatch) + 1;
+          
+          let teamA, teamB;
+          
+          if (roundNumber === 0) {
+            // First round: Sequential pairing
+            teamA = [activePlayers[i].id, activePlayers[i+1].id];
+            teamB = [activePlayers[i+2].id, activePlayers[i+3].id];
+          } else {
+            // Subsequent rounds: Score-based pairing (Mexicano format)
+            teamA = [activePlayers[i].id, activePlayers[i+3].id]; // Strongest with weakest
+            teamB = [activePlayers[i+1].id, activePlayers[i+2].id]; // 2nd strongest with 2nd weakest
+          }
+          
+          matches.push({
+            id: `match-${roundNumber}-${courtNumber-1}`,
+            roundNumber: roundNumber,
+            courtNumber: courtNumber,
+            teamA: teamA,
+            teamB: teamB,
+            scoreA: 0,
+            scoreB: 0,
+            completed: false
+          });
+        }
+      }
+      
+      return matches;
+    }
+
+    // Determine which players should rest in a round
+    function getRestingPlayers(players, roundNumber) {
+      const playersPerMatch = 4;
+      const restingCount = players.length % playersPerMatch;
+      
+      if (restingCount === 0) return [];
+      
+      // Rotate resting players to ensure fairness
+      const restingPlayers = [];
+      for (let i = 0; i < restingCount; i++) {
+        const playerIndex = (roundNumber * restingCount + i) % players.length;
+        restingPlayers.push(players[playerIndex].id);
+      }
+      
+      return restingPlayers;
+    }
+
+    // Calculate player stats with rest bonus system
+    function calculatePlayerStats(players, rounds) {
+      // Reset player scores
+      players.forEach(player => {
+        player.score = 0;
+        player.matchesPlayed = 0;
+        player.matchesWon = 0;
+        player.matchesLost = 0;
+        player.matchesTied = 0;
+        player.pointsFor = 0;
+        player.pointsAgainst = 0;
+        player.restsCount = 0;
+      });
+      
+      // Calculate rest counts first
+      rounds.forEach(round => {
+        const restingPlayers = round.restingPlayers || [];
+        restingPlayers.forEach(playerId => {
+          const player = players.find(p => p.id === playerId);
+          if (player) player.restsCount++;
+        });
+      });
+      
+      // Find minimum rest count to calculate bonus
+      const minRests = Math.min(...players.map(p => p.restsCount));
+      
+      // Calculate match-based scores
+      rounds.forEach(round => {
+        round.matches.forEach(match => {
+          if (match.completed) {
+            const teamAPlayers = match.teamA.map(playerId => 
+              players.find(p => p.id === playerId)
+            );
+            
+            const teamBPlayers = match.teamB.map(playerId => 
+              players.find(p => p.id === playerId)
+            );
+            
+            // Update matches played count
+            [...teamAPlayers, ...teamBPlayers].forEach(player => {
+              player.matchesPlayed++;
+            });
+            
+            // Update scores and wins based on match result
+            if (match.scoreA > match.scoreB) {
+              // Team A won
+              teamAPlayers.forEach(player => {
+                player.score += 3; // 3 points for a win
+                player.pointsFor += match.scoreA;
+                player.pointsAgainst += match.scoreB;
+                player.matchesWon++;
+              });
+              teamBPlayers.forEach(player => {
+                player.pointsFor += match.scoreB;
+                player.pointsAgainst += match.scoreA;
+                player.matchesLost++;
+              });
+            } else if (match.scoreB > match.scoreA) {
+              // Team B won
+              teamBPlayers.forEach(player => {
+                player.score += 3; // 3 points for a win
+                player.pointsFor += match.scoreB;
+                player.pointsAgainst += match.scoreA;
+                player.matchesWon++;
+              });
+              teamAPlayers.forEach(player => {
+                player.pointsFor += match.scoreA;
+                player.pointsAgainst += match.scoreB;
+                player.matchesLost++;
+              });
+            } else {
+              // It's a tie
+              [...teamAPlayers, ...teamBPlayers].forEach(player => {
+                player.score += 1; // 1 point for a tie
+                player.pointsFor += match.scoreA;
+                player.pointsAgainst += match.scoreB;
+                player.matchesTied++;
+              });
+            }
+          }
+        });
+      });
+      
+      // Add rest bonus points
+      players.forEach(player => {
+        const extraRests = player.restsCount - minRests;
+        if (extraRests > 0) {
+          player.score += extraRests * 10; // 10 points per extra rest
+        }
+      });
+      
+      return players;
+    }
+
+    // Render matches for a specific round
+    function renderMatches(roundIndex) {
+      const matchesContainer = document.getElementById('matchesContainer');
+      matchesContainer.innerHTML = '';
+      
+      if (!appState.currentTournament.rounds[roundIndex]) {
+        matchesContainer.innerHTML = '<div class="loading">No matches available for this round</div>';
+        return;
+      }
+      
+      const round = appState.currentTournament.rounds[roundIndex];
+      const matches = round.matches;
+      const restingPlayers = round.restingPlayers || [];
+      
+      // Show resting players first
+      if (restingPlayers.length > 0) {
+        const restCard = document.createElement('div');
+        restCard.className = 'rest-card';
+        
+        const restingPlayerNames = restingPlayers.map(playerId => 
+          appState.currentTournament.players.find(p => p.id === playerId)?.name || 'Unknown'
+        );
+        
+        restCard.innerHTML = `
+          <div class="rest-player">
+            <i class="fas fa-chair"></i> Resting: ${restingPlayerNames.join(', ')}
+          </div>
+          <div class="rest-bonus">+10 bonus points per rest</div>
+        `;
+        
+        matchesContainer.appendChild(restCard);
+      }
+      
+      // Show matches
+      matches.forEach(match => {
+        const teamAPlayers = match.teamA.map(playerId => 
+          appState.currentTournament.players.find(p => p.id === playerId)
+        );
+        
+        const teamBPlayers = match.teamB.map(playerId => 
+          appState.currentTournament.players.find(p => p.id === playerId)
+        );
+        
+        const teamANames = teamAPlayers.map(p => p.name);
+        const teamBNames = teamBPlayers.map(p => p.name);
+        
+        const matchCard = document.createElement('div');
+        matchCard.className = 'match-card';
+        matchCard.dataset.matchId = match.id;
+        
+        const scoreB = 21 - match.scoreA;
+        
+        matchCard.innerHTML = `
+          <div class="match-header">
+            <div class="match-title">Court ${match.courtNumber}</div>
+            <div class="match-status">${match.completed ? 'Completed' : 'In Progress'}</div>
+          </div>
+          <div class="match-teams">
+            <div class="match-team team-a">
+              <div class="team-name">Team A</div>
+              <div class="team-players">${teamANames.join(' & ')}</div>
+            </div>
+            <div class="match-team team-b">
+              <div class="team-name">Team B</div>
+              <div class="team-players">${teamBNames.join(' & ')}</div>
+            </div>
+          </div>
+          <div class="match-score">
+            <input type="number" class="score-input team-a-score" value="${match.scoreA}" min="0" max="21" ${match.completed ? 'disabled' : ''} placeholder="0">
+            <span class="score-display">vs</span>
+            <div class="score-display team-b-score">${match.completed ? match.scoreB : (match.scoreA > 0 ? scoreB : '')}</div>
+          </div>
+          <div style="text-align: center; font-size: 0.875rem; color: var(--text-light); margin-top: 0.5rem;">
+            Playing to 21 points total
+          </div>
+          ${!match.completed ? 
+            `<button class="btn btn-block save-score-btn" data-match-id="${match.id}">Save Score</button>` : 
+            ''
+          }
+        `;
+        
+        matchesContainer.appendChild(matchCard);
+        
+        // Add real-time score calculation
+        if (!match.completed) {
+          const scoreInput = matchCard.querySelector('.team-a-score');
+          const scoreBDisplay = matchCard.querySelector('.team-b-score');
+          
+          scoreInput.addEventListener('input', function() {
+            const scoreA = parseInt(this.value) || 0;
+            const scoreB = Math.max(0, 21 - scoreA);
+            scoreBDisplay.textContent = scoreB;
+          });
+        }
+      });
+      
+      // Add event listeners to save score buttons
+      const saveButtons = document.querySelectorAll('.save-score-btn');
+      saveButtons.forEach(button => {
+        button.addEventListener('click', function() {
+          const matchId = this.dataset.matchId;
+          const matchCard = document.querySelector(`.match-card[data-match-id="${matchId}"]`);
+          if (matchCard) {
+            const scoreA = parseInt(matchCard.querySelector('.team-a-score').value) || 0;
+            const scoreB = 21 - scoreA;
+            
+            if (scoreA >= 0 && scoreA <= 21) {
+              saveMatchScore(matchId, scoreA, scoreB);
+            } else {
+              alert('Score must be between 0 and 21');
+            }
+          }
+        });
+      });
+    }
+
+    // Save match score with real-time sync
+    function saveMatchScore(matchId, scoreA, scoreB) {
+      // Find the match and update the score
+      for (let r = 0; r < appState.currentTournament.rounds.length; r++) {
+        const round = appState.currentTournament.rounds[r];
+        for (let m = 0; m < round.matches.length; m++) {
+          const match = round.matches[m];
+          
+          if (match.id === matchId) {
+            match.scoreA = scoreA;
+            match.scoreB = scoreB;
+            match.completed = true;
+            match.completedAt = Date.now();
+            
+            // Recalculate player stats
+            appState.currentTournament.players = calculatePlayerStats(
+              appState.currentTournament.players, 
+              appState.currentTournament.rounds
+            );
+            
+            // Save to Firebase and localStorage
+            saveTournamentData(appState.currentTournament);
+            
+            // Re-render current round
+            renderMatches(r);
+            
+            // Update leaderboard
+            renderLeaderboard();
+            
+            return;
+          }
+        }
+      }
+    }
+
+    // Add new round functionality
+    function addNewRound() {
+      if (!appState.currentTournament) return;
+      
+      const newRoundNumber = appState.currentTournament.rounds.length;
+      
+      // Sort players by current standings for next round pairing
+      const sortedPlayers = [...appState.currentTournament.players].sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        const aDiff = a.pointsFor - a.pointsAgainst;
+        const bDiff = b.pointsFor - b.pointsAgainst;
+        if (bDiff !== aDiff) return bDiff - aDiff;
+        return b.pointsFor - a.pointsFor;
+      });
+      
+      // Determine resting players for this round
+      const restingPlayers = getRestingPlayers(sortedPlayers, newRoundNumber);
+      
+      // Generate matches
+      const matches = generateMatches(sortedPlayers, newRoundNumber, restingPlayers);
+      
+      // Add new round
+      appState.currentTournament.rounds.push({
+        roundNumber: newRoundNumber,
+        matches: matches,
+        restingPlayers: restingPlayers
+      });
+      
+      // Save tournament
+      saveTournamentData(appState.currentTournament);
+      
+      // Update UI
+      renderRoundTabs();
+      
+      // Switch to new round
+      appState.currentTournament.currentRound = newRoundNumber;
+      renderMatches(newRoundNumber);
+    }
+
+    // Render round tabs with add round button
+    function renderRoundTabs() {
+      const roundsNav = document.getElementById('roundsNav');
+      roundsNav.innerHTML = '';
+      
+      appState.currentTournament.rounds.forEach((round, index) => {
+        const roundTab = document.createElement('div');
+        roundTab.className = `round-tab ${index === appState.currentTournament.currentRound ? 'active' : ''}`;
+        roundTab.textContent = `Round ${index + 1}`;
+        roundTab.dataset.roundIndex = index;
+        
+        roundTab.addEventListener('click', function() {
+          const roundIndex = parseInt(this.dataset.roundIndex, 10);
+          appState.currentTournament.currentRound = roundIndex;
+          
+          // Update active tab
+          document.querySelectorAll('.round-tab').forEach(tab => {
+            tab.classList.remove('active');
+          });
+          this.classList.add('active');
+          
+          // Render matches for the selected round
+          renderMatches(roundIndex);
+        });
+        
+        roundsNav.appendChild(roundTab);
+      });
+      
+      // Add "Add Round" button
+      const addRoundBtn = document.createElement('button');
+      addRoundBtn.className = 'add-round-btn';
+      addRoundBtn.innerHTML = '<i class="fas fa-plus"></i> Add Round';
+      addRoundBtn.addEventListener('click', addNewRound);
+      
+      roundsNav.appendChild(addRoundBtn);
+    }
+
+    // Render leaderboard with enhanced stats
+    function renderLeaderboard() {
+      const leaderboardList = document.getElementById('leaderboardList');
+      leaderboardList.innerHTML = '';
+      
+      // Sort players by multiple criteria
+      const sortedPlayers = [...appState.currentTournament.players].sort((a, b) => {
+        // Primary: Total points
+        if (b.score !== a.score) return b.score - a.score;
+        // Secondary: Goal difference (points for - points against)
+        const aDiff = a.pointsFor - a.pointsAgainst;
+        const bDiff = b.pointsFor - b.pointsAgainst;
+        if (bDiff !== aDiff) return bDiff - aDiff;
+        // Tertiary: Points scored
+        return b.pointsFor - a.pointsFor;
+      });
+      
+      sortedPlayers.forEach((player, index) => {
+        const leaderboardItem = document.createElement('div');
+        leaderboardItem.className = 'leaderboard-item';
+        
+        const pointsDifference = player.pointsFor - player.pointsAgainst;
+        const restBonus = Math.max(0, player.restsCount - Math.min(...appState.currentTournament.players.map(p => p.restsCount))) * 10;
+        
+        leaderboardItem.innerHTML = `
+          <div class="rank">${index + 1}</div>
+          <div class="player-name">
+            <div style="font-weight: bold;">${player.name}</div>
+            <div style="font-size: 0.75rem; color: var(--text-light);">
+              ${player.matchesWon}W ${player.matchesLost}L ${player.matchesTied}T | 
+              ${player.pointsFor}-${player.pointsAgainst} (${pointsDifference >= 0 ? '+' : ''}${pointsDifference})
+              ${restBonus > 0 ? ` | +${restBonus} rest bonus` : ''}
+            </div>
+          </div>
+          <div class="player-score">${player.score}</div>
+        `;
+        
+        leaderboardList.appendChild(leaderboardItem);
+      });
+    }
+
+    // Initialize a new tournament
+    function initTournament(tournamentName, playerNames, playerCount, courtCount) {
+      // Create player objects
+      const players = playerNames.map((name, index) => ({
+        id: `player-${index + 1}`,
+        name: name,
+        score: 0,
+        matchesPlayed: 0,
+        matchesWon: 0,
+        matchesLost: 0,
+        matchesTied: 0,
+        pointsFor: 0,
+        pointsAgainst: 0,
+        restsCount: 0
+      }));
+      
+      // Create tournament object
+      const tournament = {
+        id: `tournament-${Date.now()}`,
+        name: tournamentName,
+        playerCount,
+        courtCount,
+        players,
+        rounds: [],
+        currentRound: 0,
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        status: 'active'
+      };
+      
+      // Generate first round
+      const restingPlayers = getRestingPlayers(players, 0);
+      const matches = generateMatches(players, 0, restingPlayers);
+      
+      tournament.rounds.push({
+        roundNumber: 0,
+        matches: matches,
+        restingPlayers: restingPlayers
+      });
+      
+      // Set as current tournament
+      appState.currentTournament = tournament;
+      
+      // Save tournament data
+      saveTournamentData(tournament);
+      
+      // Navigate to rounds screen
+      showScreen('roundsScreen');
+      
+      // Render round tabs and matches
+      renderRoundTabs();
+      renderMatches(0);
+      
+      // Render leaderboard
+      renderLeaderboard();
+    }
+
+    // Save tournament data to Firebase and localStorage with real-time sync
+    function saveTournamentData(tournament) {
+      tournament.updatedAt = Date.now();
+      
+      // Save to localStorage
+      const savedTournaments = JSON.parse(localStorage.getItem('padelAmericanoTournaments') || '{}');
+      savedTournaments[tournament.id] = tournament;
+      localStorage.setItem('padelAmericanoTournaments', JSON.stringify(savedTournaments));
+      
+      // Save to Firebase if available
+      if (window.firebaseDB && window.isFirebaseOnline) {
+        const tournamentRef = window.firebaseRef(window.firebaseDB, `tournaments/${tournament.id}`);
+        window.firebaseSet(tournamentRef, tournament)
+          .then(() => {
+            console.log('Tournament data saved to Firebase');
+          })
+          .catch(error => {
+            console.error('Error saving to Firebase:', error);
+          });
+      }
+    }
+
+    // Load all tournaments from localStorage and Firebase
+    function loadTournaments() {
+      // Load from localStorage first
+      const savedTournaments = JSON.parse(localStorage.getItem('padelAmericanoTournaments') || '{}');
+      appState.tournaments = savedTournaments;
+      
+      // Then sync with Firebase if available
+      if (window.firebaseDB && window.isFirebaseOnline) {
+        const tournamentsRef = window.firebaseRef(window.firebaseDB, 'tournaments');
+        window.firebaseOnValue(tournamentsRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const firebaseTournaments = snapshot.val();
+            
+            // Merge Firebase data with localStorage data
+            Object.keys(firebaseTournaments).forEach(tournamentId => {
+              const firebaseTournament = firebaseTournaments[tournamentId];
+              const localTournament = appState.tournaments[tournamentId];
+              
+              // Use the most recently updated version
+              if (!localTournament || firebaseTournament.updatedAt > localTournament.updatedAt) {
+                appState.tournaments[tournamentId] = firebaseTournament;
+              }
+            });
+            
+            // Save merged data to localStorage
+            localStorage.setItem('padelAmericanoTournaments', JSON.stringify(appState.tournaments));
+            
+            // Re-render tournament list
+            renderTournamentList();
+            
+            console.log('Tournaments synced from Firebase');
+          }
+        });
+      }
+      
+      renderTournamentList();
+    }
+
+    // Render tournament list
+    function renderTournamentList() {
+      const tournamentsList = document.getElementById('tournamentsList');
+      tournamentsList.innerHTML = '';
+      
+      const tournaments = Object.values(appState.tournaments);
+      
+      if (tournaments.length === 0) {
+        tournamentsList.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-table-tennis-paddle-ball" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.3;"></i>
+            <p>No tournaments yet. Create your first tournament to get started!</p>
+          </div>
+        `;
+        return;
+      }
+      
+      // Sort tournaments by creation date (newest first)
+      tournaments.sort((a, b) => b.createdAt - a.createdAt);
+      
+      tournaments.forEach(tournament => {
+        const tournamentItem = document.createElement('div');
+        tournamentItem.className = 'tournament-item';
+        tournamentItem.dataset.tournamentId = tournament.id;
+        
+        const createdDate = new Date(tournament.createdAt).toLocaleDateString();
+        const completedMatches = tournament.rounds.reduce((total, round) => {
+          return total + round.matches.filter(match => match.completed).length;
+        }, 0);
+        const totalMatches = tournament.rounds.reduce((total, round) => total + round.matches.length, 0);
+        
+        tournamentItem.innerHTML = `
+          <div class="tournament-info">
+            <div class="tournament-name">${tournament.name}</div>
+            <div class="tournament-meta">
+              ${tournament.playerCount} players • ${tournament.courtCount} courts • ${tournament.rounds.length} rounds<br>
+              Created: ${createdDate} • Matches: ${completedMatches}/${totalMatches}
+            </div>
+          </div>
+          <div class="tournament-actions">
+            <button class="btn btn-small btn-primary view-tournament-btn" data-tournament-id="${tournament.id}">
+              View
+            </button>
+            <button class="btn btn-small btn-danger delete-tournament-btn" data-tournament-id="${tournament.id}">
+              Delete
+            </button>
+          </div>
+        `;
+        
+        tournamentsList.appendChild(tournamentItem);
+      });
+      
+      // Add event listeners
+      document.querySelectorAll('.view-tournament-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const tournamentId = this.dataset.tournamentId;
+          loadTournament(tournamentId);
+        });
+      });
+      
+      document.querySelectorAll('.delete-tournament-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const tournamentId = this.dataset.tournamentId;
+          deleteTournament(tournamentId);
+        });
+      });
+    }
+
+    // Load a specific tournament
+    function loadTournament(tournamentId) {
+      const tournament = appState.tournaments[tournamentId];
+      if (tournament) {
+        appState.currentTournament = tournament;
+        
+        // Navigate to rounds screen
+        showScreen('roundsScreen');
+        
+        // Render round tabs and matches
+        renderRoundTabs();
+        renderMatches(tournament.currentRound || 0);
+        
+        // Render leaderboard
+        renderLeaderboard();
+      }
+    }
+
+    // Delete a tournament
+    function deleteTournament(tournamentId) {
+      if (confirm('Are you sure you want to delete this tournament? This action cannot be undone.')) {
+        // Remove from localStorage
+        delete appState.tournaments[tournamentId];
+        localStorage.setItem('padelAmericanoTournaments', JSON.stringify(appState.tournaments));
+        
+        // Remove from Firebase if available
+        if (window.firebaseDB && window.isFirebaseOnline) {
+          const tournamentRef = window.firebaseRef(window.firebaseDB, `tournaments/${tournamentId}`);
+          window.firebaseSet(tournamentRef, null)
+            .then(() => {
+              console.log('Tournament deleted from Firebase');
+            })
+            .catch(error => {
+              console.error('Error deleting from Firebase:', error);
+            });
+        }
+        
+        // Re-render tournament list
+        renderTournamentList();
+        
+        // If this was the current tournament, go back to tournament list
+        if (appState.currentTournament && appState.currentTournament.id === tournamentId) {
+          appState.currentTournament = null;
+          showScreen('tournamentListScreen');
+        }
+      }
+    }
+
+    // Export functions
+    function exportToPDF() {
+      // Create a new window with printable content
+      const printWindow = window.open('', '_blank');
+      const tournament = appState.currentTournament;
+      
+      const printContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <title>${tournament.name} - Results</title>
+          <style>
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .tournament-info { margin-bottom: 20px; }
+            .leaderboard { width: 100%; border-collapse: collapse; }
+            .leaderboard th, .leaderboard td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            .leaderboard th { background-color: #8B5CF6; color: white; }
+            .rank { text-align: center; font-weight: bold; }
+            @media print { .no-print { display: none; } }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <h1>${tournament.name}</h1>
+            <p>Final Results</p>
+          </div>
+          <div class="tournament-info">
+            <p><strong>Players:</strong> ${tournament.playerCount}</p>
+            <p><strong>Courts:</strong> ${tournament.courtCount}</p>
+            <p><strong>Rounds:</strong> ${tournament.rounds.length}</p>
+            <p><strong>Date:</strong> ${new Date(tournament.createdAt).toLocaleDateString()}</p>
+          </div>
+          <table class="leaderboard">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Player</th>
+                <th>Points</th>
+                <th>Matches</th>
+                <th>Goal Diff</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tournament.players
+                .sort((a, b) => {
+                  if (b.score !== a.score) return b.score - a.score;
+                  const aDiff = a.pointsFor - a.pointsAgainst;
+                  const bDiff = b.pointsFor - b.pointsAgainst;
+                  if (bDiff !== aDiff) return bDiff - aDiff;
+                  return b.pointsFor - a.pointsFor;
+                })
+                .map((player, index) => {
+                  const pointsDiff = player.pointsFor - player.pointsAgainst;
+                  return `
+                    <tr>
+                      <td class="rank">${index + 1}</td>
+                      <td>${player.name}</td>
+                      <td>${player.score}</td>
+                      <td>${player.matchesWon}W ${player.matchesLost}L ${player.matchesTied}T</td>
+                      <td>${pointsDiff >= 0 ? '+' : ''}${pointsDiff}</td>
+                    </tr>
+                  `;
+                }).join('')}
+            </tbody>
+          </table>
+          <div class="no-print" style="margin-top: 20px; text-align: center;">
+            <button onclick="window.print()">Print PDF</button>
+            <button onclick="window.close()">Close</button>
+          </div>
+        </body>
+        </html>
+      `;
+      
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+    }
+
+    function exportToPNG() {
+      const canvas = document.getElementById('exportCanvas');
+      const ctx = canvas.getContext('2d');
+      
+      // Set canvas size
+      canvas.width = 800;
+      canvas.height = 600;
+      
+      // Clear canvas
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Draw header
+      ctx.fillStyle = '#8B5CF6';
+      ctx.fillRect(0, 0, canvas.width, 80);
+      
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 24px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText(appState.currentTournament.name, canvas.width / 2, 35);
+      ctx.font = '16px Arial';
+      ctx.fillText('Final Results', canvas.width / 2, 60);
+      
+      // Draw leaderboard
+      const sortedPlayers = [...appState.currentTournament.players].sort((a, b) => {
+        if (b.score !== a.score) return b.score - a.score;
+        const aDiff = a.pointsFor - a.pointsAgainst;
+        const bDiff = b.pointsFor - b.pointsAgainst;
+        if (bDiff !== aDiff) return bDiff - aDiff;
+        return b.pointsFor - a.pointsFor;
+      });
+      
+      ctx.fillStyle = '#1F2937';
+      ctx.font = 'bold 16px Arial';
+      ctx.textAlign = 'left';
+      ctx.fillText('Rank', 50, 120);
+      ctx.fillText('Player', 150, 120);
+      ctx.fillText('Points', 400, 120);
+      ctx.fillText('Matches', 500, 120);
+      ctx.fillText('Goal Diff', 650, 120);
+      
+      // Draw line under header
+      ctx.strokeStyle = '#E5E7EB';
+      ctx.beginPath();
+      ctx.moveTo(50, 130);
+      ctx.lineTo(750, 130);
+      ctx.stroke();
+      
+      // Draw player data
+      ctx.font = '14px Arial';
+      sortedPlayers.forEach((player, index) => {
+        const y = 160 + (index * 30);
+        const pointsDiff = player.pointsFor - player.pointsAgainst;
+        
+        ctx.fillText((index + 1).toString(), 50, y);
+        ctx.fillText(player.name, 150, y);
+        ctx.fillText(player.score.toString(), 400, y);
+        ctx.fillText(`${player.matchesWon}W ${player.matchesLost}L ${player.matchesTied}T`, 500, y);
+        ctx.fillText(`${pointsDiff >= 0 ? '+' : ''}${pointsDiff}`, 650, y);
+      });
+      
+      // Convert to blob and download
+      canvas.toBlob(function(blob) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${appState.currentTournament.name}-results.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    function generateShareLink() {
+      const tournament = appState.currentTournament;
+      const shareData = {
+        id: tournament.id,
+        name: tournament.name,
+        players: tournament.players,
+        rounds: tournament.rounds.length,
+        createdAt: tournament.createdAt
+      };
+      
+      // Create a simple share URL (in a real app, you'd store this on a server)
+      const encodedData = btoa(JSON.stringify(shareData));
+      const shareUrl = `${window.location.origin}${window.location.pathname}?share=${encodedData}`;
+      
+      const shareLinkDisplay = document.getElementById('shareLinkDisplay');
+      shareLinkDisplay.innerHTML = `
+        <strong>Share this tournament:</strong><br>
+        <input type="text" value="${shareUrl}" readonly style="width: 100%; margin-top: 5px;" onclick="this.select()">
+        <small>Click to select and copy the link</small>
+      `;
+      shareLinkDisplay.style.display = 'block';
+    }
+
+    // Event Listeners
+    document.addEventListener('DOMContentLoaded', function() {
+      // Back button
+      document.getElementById('backBtn').addEventListener('click', function() {
+        if (appState.currentScreen === 'roundsScreen' || appState.currentScreen === 'leaderboardScreen') {
+          showScreen('tournamentListScreen');
+        } else {
+          showScreen('tournamentListScreen');
+        }
+      });
+
+      // Menu button (placeholder for future features)
+      document.getElementById('menuBtn').addEventListener('click', function() {
+        console.log('Menu clicked');
+      });
+
+      // New Tournament Button
+      document.getElementById('newTournamentBtn').addEventListener('click', function() {
+        updatePlayerCountDisplay();
+        generatePlayerInputs(4);
+        showScreen('setupScreen');
+      });
+
+      // Player count range slider
+      document.getElementById('playerCount').addEventListener('input', function() {
+        updatePlayerCountDisplay();
+        generatePlayerInputs(parseInt(this.value));
+      });
+      
+      // Setup Form Submit
+      document.getElementById('setupForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const tournamentName = document.getElementById('tournamentName').value.trim() || 'Padel Tournament';
+        const playerCount = parseInt(document.getElementById('playerCount').value, 10);
+        const courtCount = parseInt(document.getElementById('courtCount').value, 10);
+        
+        // Collect player names
+        const playerNames = [];
+        for (let i = 1; i <= playerCount; i++) {
+          const playerName = document.getElementById(`player${i}`).value.trim();
+          playerNames.push(playerName || `Player ${i}`);
+        }
+        
+        // Initialize the tournament
+        initTournament(tournamentName, playerNames, playerCount, courtCount);
+      });
+      
+      // Navigation Tabs
+      document.getElementById('roundsTab').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (appState.currentTournament) {
+          showScreen('roundsScreen');
+        }
+      });
+      
+      document.getElementById('leaderboardTab').addEventListener('click', function(e) {
+        e.preventDefault();
+        if (appState.currentTournament) {
+          showScreen('leaderboardScreen');
+        }
+      });
+
+      // Export buttons
+      document.getElementById('exportPDF').addEventListener('click', exportToPDF);
+      document.getElementById('exportPNG').addEventListener('click', exportToPNG);
+      document.getElementById('shareLink').addEventListener('click', generateShareLink);
+      
+      // Check for shared tournament in URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const sharedData = urlParams.get('share');
+      if (sharedData) {
+        try {
+          const tournament = JSON.parse(atob(sharedData));
+          alert(`Shared tournament: ${tournament.name}\nPlayers: ${tournament.players.length}\nRounds: ${tournament.rounds}`);
+        } catch (error) {
+          console.error('Invalid share data');
+        }
+      }
+      
+      // Load tournaments on app start
+      loadTournaments();
+    });
+  </script>
+</body>
+</html>
