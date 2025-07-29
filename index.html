@@ -395,6 +395,10 @@ border-radius: 12px;
 margin-bottom: 1rem;
 background-color: #f5f5f5;
 cursor: pointer;
+position: relative;
+overflow: hidden;
+transition: transform 0.3s ease, background-color 0.2s ease;
+touch-action: pan-y;
 }
 
 .tournament-item:hover {
@@ -402,6 +406,47 @@ background-color: #eeeeee;
 }
 body.dark-mode .tournament-item:hover {
 background-color: var(--dark-border-color);
+}
+
+.tournament-item.swiping {
+z-index: 10;
+}
+
+.tournament-item.swipe-left {
+transform: translateX(-80px);
+}
+
+.tournament-delete-btn {
+position: absolute;
+right: -80px;
+top: 0;
+bottom: 0;
+width: 80px;
+background-color: var(--danger-color);
+color: white;
+border: none;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 1.2rem;
+cursor: pointer;
+transition: right 0.3s ease;
+}
+
+.tournament-item.swipe-left .tournament-delete-btn {
+right: 0;
+}
+
+.tournament-delete-btn:hover {
+background-color: #dc2626;
+}
+
+body.dark-mode .tournament-delete-btn {
+background-color: var(--danger-color);
+}
+
+body.dark-mode .tournament-delete-btn:hover {
+background-color: #dc2626;
 }
 
 .tournament-info {
@@ -1119,10 +1164,14 @@ if (database) {
 window.addEventListener('online', () => {
 console.log('Network: Back online, checking Firebase connection...');
 updateSyncStatus(true);
+// Reload tournaments from Firebase when coming back online
+loadTournaments();
 });
 window.addEventListener('offline', () => {
 console.log('Network: Offline, switching to localStorage mode');
 updateSyncStatus(false);
+// Switch to localStorage when going offline
+fallbackToLocalStorage();
 });
 }
 </script>
@@ -1697,35 +1746,23 @@ console.log('📱 Firebase not available, data saved locally only');
 }
 }
 
-// Load all tournaments from localStorage and Firebase with real-time sync
+// Load all tournaments from localStorage and Firebase with priority logic
 function loadTournaments() {
-// Load from localStorage first
-const savedTournaments = JSON.parse(localStorage.getItem('padelAmericanoTournaments') || '{}');
-appState.tournaments = savedTournaments;
-// Render what we have locally first
-renderTournamentList();
-// Then sync with Firebase if available
-if (window.firebaseDB) {
+// Check if we're online and have Firebase available
+const isOnlineWithFirebase = window.firebaseDB && window.isFirebaseOnline && navigator.onLine;
+if (isOnlineWithFirebase) {
+// When online with Firebase: Load only from Firebase (prioritize cloud data)
+console.log('🌐 Online mode: Loading tournaments from Firebase only');
+appState.tournaments = {}; // Clear local tournaments when online
 const tournamentsRef = window.firebaseRef(window.firebaseDB, 'tournaments');
 window.firebaseOnValue(tournamentsRef, (snapshot) => {
 try {
 if (snapshot.exists()) {
 const firebaseTournaments = snapshot.val();
-let hasUpdates = false;
-// Merge Firebase data with localStorage data
-Object.keys(firebaseTournaments).forEach(tournamentId => {
-const firebaseTournament = firebaseTournaments[tournamentId];
-const localTournament = appState.tournaments[tournamentId];
-// Use the most recently updated version
-if (!localTournament || firebaseTournament.updatedAt > localTournament.updatedAt) {
-appState.tournaments[tournamentId] = firebaseTournament;
-hasUpdates = true;
-}
-});
-if (hasUpdates) {
-// Save merged data to localStorage
-localStorage.setItem('padelAmericanoTournaments', JSON.stringify(appState.tournaments));
-// Re-render tournament list
+appState.tournaments = firebaseTournaments;
+// Save to localStorage as backup
+localStorage.setItem('padelAmericanoTournaments', JSON.stringify(firebaseTournaments));
+// Render tournament list
 renderTournamentList();
 // Update current tournament if it was modified
 if (appState.currentTournament && appState.tournaments[appState.currentTournament.id]) {
@@ -1741,17 +1778,32 @@ renderLeaderboard();
 }
 }
 }
-console.log('🔄 Real-time sync: Tournaments updated from Firebase');
-}
+console.log('🔄 Real-time sync: Tournaments loaded from Firebase');
+} else {
+// No tournaments in Firebase
+appState.tournaments = {};
+renderTournamentList();
 }
 } catch (error) {
 console.warn('Firebase sync error:', error);
+fallbackToLocalStorage();
 }
 }, (error) => {
 console.warn('Firebase listener error:', error);
 updateSyncStatus(false);
+fallbackToLocalStorage();
 });
+} else {
+// When offline or Firebase not available: Use localStorage
+fallbackToLocalStorage();
 }
+}
+// Fallback function to load from localStorage
+function fallbackToLocalStorage() {
+console.log('📱 Offline mode: Loading tournaments from localStorage');
+const savedTournaments = JSON.parse(localStorage.getItem('padelAmericanoTournaments') || '{}');
+appState.tournaments = savedTournaments;
+renderTournamentList();
 }
 
 // Render tournament list
@@ -1782,10 +1834,102 @@ tournamentItem.innerHTML = `
 <div>Mexicano</div>
 <div>${tournament.playerCount} players</div>
 </div>
+<button class="tournament-delete-btn" data-tournament-id="${tournament.id}">
+<i class="fas fa-trash"></i>
+</button>
 `;
-tournamentItem.addEventListener('click', function() {
+// Add swipe gesture support
+let startX = 0;
+let currentX = 0;
+let isDragging = false;
+let hasTriggeredAction = false;
+const tournamentInfo = tournamentItem.querySelector('.tournament-info, .tournament-meta');
+const deleteBtn = tournamentItem.querySelector('.tournament-delete-btn');
+// Touch events for mobile
+tournamentItem.addEventListener('touchstart', function(e) {
+startX = e.touches[0].clientX;
+isDragging = true;
+hasTriggeredAction = false;
+tournamentItem.classList.add('swiping');
+});
+tournamentItem.addEventListener('touchmove', function(e) {
+if (!isDragging) return;
+e.preventDefault();
+currentX = e.touches[0].clientX;
+const deltaX = startX - currentX;
+if (deltaX > 0 && deltaX <= 80) {
+tournamentItem.style.transform = `translateX(-${deltaX}px)`;
+}
+});
+tournamentItem.addEventListener('touchend', function(e) {
+if (!isDragging) return;
+isDragging = false;
+tournamentItem.classList.remove('swiping');
+const deltaX = startX - currentX;
+if (deltaX > 40) {
+// Show delete button
+tournamentItem.classList.add('swipe-left');
+tournamentItem.style.transform = '';
+} else {
+// Reset position
+tournamentItem.classList.remove('swipe-left');
+tournamentItem.style.transform = '';
+}
+});
+// Mouse events for desktop
+tournamentItem.addEventListener('mousedown', function(e) {
+startX = e.clientX;
+isDragging = true;
+hasTriggeredAction = false;
+tournamentItem.classList.add('swiping');
+});
+tournamentItem.addEventListener('mousemove', function(e) {
+if (!isDragging) return;
+e.preventDefault();
+currentX = e.clientX;
+const deltaX = startX - currentX;
+if (deltaX > 0 && deltaX <= 80) {
+tournamentItem.style.transform = `translateX(-${deltaX}px)`;
+}
+});
+tournamentItem.addEventListener('mouseup', function(e) {
+if (!isDragging) return;
+isDragging = false;
+tournamentItem.classList.remove('swiping');
+const deltaX = startX - currentX;
+if (deltaX > 40) {
+// Show delete button
+tournamentItem.classList.add('swipe-left');
+tournamentItem.style.transform = '';
+} else {
+// Reset position and trigger click if it's a tap
+tournamentItem.classList.remove('swipe-left');
+tournamentItem.style.transform = '';
+if (Math.abs(deltaX) < 5 && !hasTriggeredAction) {
 const tournamentId = this.dataset.tournamentId;
 loadTournament(tournamentId);
+}
+}
+});
+// Reset swipe state when clicking elsewhere
+document.addEventListener('click', function(e) {
+if (!tournamentItem.contains(e.target)) {
+tournamentItem.classList.remove('swipe-left');
+tournamentItem.style.transform = '';
+}
+});
+// Delete button click handler
+deleteBtn.addEventListener('click', function(e) {
+e.stopPropagation();
+const tournamentId = this.dataset.tournamentId;
+deleteTournament(tournamentId);
+});
+// Regular click handler for tournament info (when not swiped)
+tournamentItem.addEventListener('click', function(e) {
+if (!this.classList.contains('swipe-left') && !isDragging) {
+const tournamentId = this.dataset.tournamentId;
+loadTournament(tournamentId);
+}
 });
 tournamentsList.appendChild(tournamentItem);
 });
@@ -1838,69 +1982,258 @@ function exportToPDF() {
 // Create a new window with printable content
 const printWindow = window.open('', '_blank');
 const tournament = appState.currentTournament;
-const printContent = `
-<!DOCTYPE html>
-<html>
-<head>
-<title>${tournament.name} - Results</title>
-<style>
-body { font-family: Arial, sans-serif; margin: 20px; }
-.header { text-align: center; margin-bottom: 30px; }
-.tournament-info { margin-bottom: 20px; }
-.leaderboard { width: 100%; border-collapse: collapse; }
-.leaderboard th, .leaderboard td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-.leaderboard th { background-color: #8B5CF6; color: white; }
-.rank { text-align: center; font-weight: bold; }
-@media print { .no-print { display: none; } }
-</style>
-</head>
-<body>
-<div class="header">
-<h1>${tournament.name}</h1>
-<p>Final Results</p>
-</div>
-<div class="tournament-info">
-<p><strong>Players:</strong> ${tournament.playerCount}</p>
-<p><strong>Courts:</strong> ${tournament.courtCount}</p>
-<p><strong>Rounds:</strong> ${tournament.rounds.length}</p>
-<p><strong>Date:</strong> ${new Date(tournament.createdAt).toLocaleDateString()}</p>
-</div>
-<table class="leaderboard">
-<thead>
-<tr>
-<th>Rank</th>
-<th>Player</th>
-<th>Points</th>
-<th>Matches</th>
-<th>Goal Diff</th>
-</tr>
-</thead>
-<tbody>
-${tournament.players
-.sort((a, b) => {
+// Calculate comprehensive player stats
+const playersWithStats = [...tournament.players].sort((a, b) => {
 if (b.score !== a.score) return b.score - a.score;
 const aDiff = a.pointsFor - a.pointsAgainst;
 const bDiff = b.pointsFor - b.pointsAgainst;
 if (bDiff !== aDiff) return bDiff - aDiff;
 return b.pointsFor - a.pointsFor;
-})
-.map((player, index) => {
+});
+// Generate round details for PDF
+const roundDetails = tournament.rounds.map((round, roundIndex) => {
+let roundHtml = `
+<div class="round-section">
+<h3>Round #${roundIndex + 1}</h3>
+`;
+// Show resting players if any
+if (round.restingPlayers && round.restingPlayers.length > 0) {
+const restingPlayerNames = round.restingPlayers.map(playerId =>
+tournament.players.find(p => p.id === playerId)?.name || 'Unknown'
+);
+roundHtml += `
+<div class="resting-players">
+<strong>Resting:</strong> ${restingPlayerNames.join(', ')} (+10 bonus points)
+</div>
+`;
+}
+// Show matches
+round.matches.forEach((match, matchIndex) => {
+const teamAPlayers = match.teamA.map(playerId =>
+tournament.players.find(p => p.id === playerId)?.name || 'Unknown'
+);
+const teamBPlayers = match.teamB.map(playerId =>
+tournament.players.find(p => p.id === playerId)?.name || 'Unknown'
+);
+roundHtml += `
+<div class="match-result">
+<h4>Court ${match.courtNumber}</h4>
+<div class="match-teams">
+<div class="team">
+<div class="team-players">${teamAPlayers.join(' & ')}</div>
+<div class="score ${match.scoreA > match.scoreB ? 'winner' : ''}">${match.completed ? match.scoreA : '-'}</div>
+</div>
+<div class="vs">vs</div>
+<div class="team">
+<div class="team-players">${teamBPlayers.join(' & ')}</div>
+<div class="score ${match.scoreB > match.scoreA ? 'winner' : ''}">${match.completed ? match.scoreB : '-'}</div>
+</div>
+</div>
+${match.completed ? `<div class="match-status">Final Score: ${match.scoreA} - ${match.scoreB}</div>` : '<div class="match-status">Not completed</div>'}
+</div>
+`;
+});
+roundHtml += '</div>';
+return roundHtml;
+}).join('');
+const printContent = `
+<!DOCTYPE html>
+<html>
+<head>
+<title>${tournament.name} - Complete Results</title>
+<style>
+body {
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+margin: 20px;
+color: #333;
+line-height: 1.4;
+}
+.header {
+text-align: center;
+margin-bottom: 40px;
+border-bottom: 3px solid #8B5CF6;
+padding-bottom: 20px;
+}
+.header h1 {
+font-size: 2.5em;
+margin: 0;
+color: #8B5CF6;
+font-weight: bold;
+}
+.tournament-info {
+margin-bottom: 30px;
+background: #f8f9fa;
+padding: 15px;
+border-radius: 8px;
+display: flex;
+justify-content: space-around;
+flex-wrap: wrap;
+}
+.tournament-info div {
+margin: 5px 15px;
+}
+.section-title {
+font-size: 1.8em;
+color: #8B5CF6;
+margin: 30px 0 15px 0;
+border-bottom: 2px solid #8B5CF6;
+padding-bottom: 5px;
+}
+.leaderboard {
+width: 100%;
+border-collapse: collapse;
+margin-bottom: 40px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.leaderboard th, .leaderboard td {
+border: 1px solid #ddd;
+padding: 12px 8px;
+text-align: center;
+}
+.leaderboard th {
+background-color: #8B5CF6;
+color: white;
+font-weight: bold;
+}
+.leaderboard tr:nth-child(even) {
+background-color: #f8f9fa;
+}
+.leaderboard tr:hover {
+background-color: #e9ecef;
+}
+.rank {
+text-align: center;
+font-weight: bold;
+font-size: 1.1em;
+}
+.player-name {
+text-align: left;
+font-weight: 600;
+}
+.round-section {
+margin-bottom: 30px;
+border: 1px solid #e9ecef;
+border-radius: 8px;
+padding: 20px;
+background: #fff;
+}
+.round-section h3 {
+margin: 0 0 15px 0;
+color: #8B5CF6;
+font-size: 1.4em;
+}
+.resting-players {
+background: #fff3cd;
+border: 1px solid #ffeaa7;
+padding: 10px;
+border-radius: 5px;
+margin-bottom: 15px;
+text-align: center;
+}
+.match-result {
+margin-bottom: 20px;
+border: 1px solid #dee2e6;
+border-radius: 5px;
+padding: 15px;
+background: #f8f9fa;
+}
+.match-result h4 {
+margin: 0 0 10px 0;
+color: #495057;
+text-align: center;
+}
+.match-teams {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 10px;
+}
+.team {
+flex: 1;
+text-align: center;
+}
+.team-players {
+font-weight: 600;
+margin-bottom: 5px;
+}
+.score {
+font-size: 2em;
+font-weight: bold;
+color: #6c757d;
+}
+.score.winner {
+color: #28a745;
+}
+.vs {
+margin: 0 20px;
+font-weight: bold;
+color: #6c757d;
+}
+.match-status {
+text-align: center;
+font-size: 0.9em;
+color: #6c757d;
+font-style: italic;
+}
+@media print {
+.no-print { display: none; }
+body { margin: 10px; }
+.round-section { break-inside: avoid; }
+}
+@page {
+margin: 1.5cm;
+}
+</style>
+</head>
+<body>
+<div class="header">
+<h1>${tournament.name}</h1>
+<p style="font-size: 1.2em; color: #6c757d; margin: 10px 0;">Complete Tournament Results</p>
+</div>
+<div class="tournament-info">
+<div><strong>Players:</strong> ${tournament.playerCount}</div>
+<div><strong>Courts:</strong> ${tournament.courtCount}</div>
+<div><strong>Rounds:</strong> ${tournament.rounds.length}</div>
+<div><strong>Date:</strong> ${new Date(tournament.createdAt).toLocaleDateString()}</div>
+<div><strong>Tournament Type:</strong> Mexicano (Americano)</div>
+</div>
+<h2 class="section-title">Final Leaderboard</h2>
+<table class="leaderboard">
+<thead>
+<tr>
+<th style="width: 60px;">Rank</th>
+<th style="width: 200px;">Player</th>
+<th style="width: 100px;">W-L-T</th>
+<th style="width: 100px;">Goal Diff</th>
+<th style="width: 100px;">Points</th>
+<th style="width: 80px;">Rests</th>
+</tr>
+</thead>
+<tbody>
+${playersWithStats.map((player, index) => {
 const pointsDiff = player.pointsFor - player.pointsAgainst;
 return `
 <tr>
-<td class="rank">${index + 1}</td>
-<td>${player.name}</td>
-<td>${player.score}</td>
-<td>${player.matchesWon}W ${player.matchesLost}L ${player.matchesTied}T</td>
+<td class="rank">${index + 1}.</td>
+<td class="player-name">${player.name}</td>
+<td>${player.matchesWon}-${player.matchesLost}-${player.matchesTied}</td>
 <td>${pointsDiff >= 0 ? '+' : ''}${pointsDiff}</td>
+<td><strong>${player.score}</strong></td>
+<td>${player.restsCount || 0}</td>
 </tr>
 `;
 }).join('')}
 </tbody>
 </table>
-<div class="no-print" style="margin-top: 20px; text-align: center;">
-<button onclick="window.print()">Print PDF</button>
-<button onclick="window.close()">Close</button>
+<h2 class="section-title">Round by Round Results</h2>
+${roundDetails}
+<div class="no-print" style="margin-top: 40px; text-align: center; padding: 20px; border-top: 2px solid #dee2e6;">
+<button onclick="window.print()" style="background: #8B5CF6; color: white; border: none; padding: 15px 30px; border-radius: 5px; font-size: 16px; margin: 10px; cursor: pointer;">Print PDF</button>
+<button onclick="window.close()" style="background: #6c757d; color: white; border: none; padding: 15px 30px; border-radius: 5px; font-size: 16px; margin: 10px; cursor: pointer;">Close</button>
+</div>
+<div style="margin-top: 40px; text-align: center; color: #6c757d; font-size: 0.9em; border-top: 1px solid #dee2e6; padding-top: 20px;">
+Generated by Padel Americano Tournament Manager<br>
+${new Date().toLocaleString()}
 </div>
 </body>
 </html>
