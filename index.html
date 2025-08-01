@@ -163,6 +163,8 @@
       padding: 0;
       box-sizing: border-box;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
     }
 
     body {
@@ -338,10 +340,17 @@
     }
 
     .btn-small {
-      padding: 0.75rem 1.5rem;
-      font-size: 0.875rem;
-      min-height: 44px; /* Ensure touch target minimum */
-      min-width: 44px;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.8rem;
+      min-height: 40px; /* Ensure touch target minimum */
+      min-width: 40px;
+    }
+    
+    .btn-tiny {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.75rem;
+      min-height: 36px;
+      min-width: 36px;
     }
     
     .btn i {
@@ -818,7 +827,7 @@
 
     /* Tournament List Styles */
     .tournament-item {
-      padding: 2rem;
+      padding: 1.5rem;
       border-radius: 16px;
       margin-bottom: 1.5rem;
       background-color: #f5f5f5;
@@ -855,50 +864,12 @@
       box-shadow: 0 6px 14px var(--dark-shadow-color);
     }
 
-    .tournament-item.swiping {
-      z-index: 10;
-    }
-
-    .tournament-item.swipe-left {
-      transform: translateX(-80px);
-    }
-
-    .tournament-delete-btn {
-      position: absolute;
-      right: -80px;
-      top: 0;
-      bottom: 0;
-      width: 80px;
-      background-color: var(--danger-color);
-      color: white;
-      border: none;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.2rem;
-      cursor: pointer;
-      transition: right 0.3s ease;
-    }
-
-    .tournament-item.swipe-left .tournament-delete-btn {
-      right: 0;
-    }
-
-    .tournament-delete-btn:hover {
-      background-color: #dc2626;
-    }
-
-    body.dark-mode .tournament-delete-btn {
-      background-color: var(--danger-color);
-    }
-
-    body.dark-mode .tournament-delete-btn:hover {
-      background-color: #dc2626;
-    }
+    /* Remove swipe-to-delete functionality as requested */
 
     .tournament-info {
       display: flex;
       justify-content: space-between;
+      margin-bottom: 0.75rem;
     }
 
     .tournament-name {
@@ -925,8 +896,9 @@
       color: var(--text-light);
       display: flex;
       justify-content: space-between;
-      padding-top: 0.5rem;
+      padding-top: 0.75rem;
       border-top: 1px solid rgba(0,0,0,0.05);
+      gap: 1rem;
     }
     
     body.dark-mode .tournament-meta {
@@ -1926,12 +1898,17 @@
   <!-- Rounds Screen -->
   <div id="roundsScreen" class="screen">
     <div class="container">
-      <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center;">
-        <h2 class="screen-title" style="margin-bottom: 0;">
+      <div style="margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;">
+        <h2 class="screen-title" style="margin-bottom: 0.5rem; margin-right: 1rem;">
           <i class="fas fa-table-tennis" style="color: var(--primary-color); margin-right: 8px;"></i> Matches
         </h2>
-        <div style="font-size: 0.9rem; background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)); color: white; padding: 0.5rem 1rem; border-radius: 20px;">
-          <i class="fas fa-wifi" style="margin-right: 5px;"></i> Real-time sync
+        <div style="display: flex; gap: 1rem; align-items: center;">
+          <button id="tournamentDeleteBtn" class="btn btn-tiny btn-danger">
+            <i class="fas fa-trash-alt" style="margin-right: 3px;"></i> Delete
+          </button>
+          <div style="font-size: 0.9rem; background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end)); color: white; padding: 0.5rem 1rem; border-radius: 20px;">
+            <i class="fas fa-wifi" style="margin-right: 5px;"></i> Real-time sync
+          </div>
         </div>
       </div>
       
@@ -1957,8 +1934,8 @@
   <!-- Players Screen -->
   <div id="playersScreen" class="screen">
     <div class="container">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-        <h2 class="screen-title" style="margin-bottom: 0;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.5rem;">
+        <h2 class="screen-title" style="margin-bottom: 0; margin-right: 0.5rem;">
           <i class="fas fa-users" style="color: var(--primary-color); margin-right: 8px;"></i> Players
         </h2>
         <button id="addPlayerBtn" class="btn btn-small btn-primary">
@@ -3042,11 +3019,11 @@
         
         playerItem.innerHTML = `
           <div class="player-name">${player.name}</div>
-          <div>
-            <button class="btn btn-small btn-primary edit-player-btn" data-player-id="${player.id}">
+          <div style="display: flex; gap: 0.5rem;">
+            <button class="btn btn-tiny btn-primary edit-player-btn" data-player-id="${player.id}">
               <i class="fas fa-edit"></i>
             </button>
-            <button class="btn btn-small btn-danger delete-player-btn" data-player-id="${player.id}">
+            <button class="btn btn-tiny btn-danger delete-player-btn" data-player-id="${player.id}">
               <i class="fas fa-trash-alt"></i>
             </button>
           </div>
@@ -3442,124 +3419,12 @@
               ${tournament.playerCount} players
             </div>
           </div>
-          <button class="tournament-delete-btn" data-tournament-id="${tournament.id}">
-            <i class="fas fa-trash"></i>
-          </button>
         `;
         
-        // Add swipe gesture support
-        let startX = 0;
-        let currentX = 0;
-        let isDragging = false;
-        let hasTriggeredAction = false;
-        
-        const tournamentInfo = tournamentItem.querySelector('.tournament-info, .tournament-meta');
-        const deleteBtn = tournamentItem.querySelector('.tournament-delete-btn');
-        
-        // Touch events for mobile
-        tournamentItem.addEventListener('touchstart', function(e) {
-          startX = e.touches[0].clientX;
-          isDragging = true;
-          hasTriggeredAction = false;
-          tournamentItem.classList.add('swiping');
-        });
-        
-        tournamentItem.addEventListener('touchmove', function(e) {
-          if (!isDragging) return;
-          
-          e.preventDefault();
-          currentX = e.touches[0].clientX;
-          const deltaX = startX - currentX;
-          
-          if (deltaX > 0 && deltaX <= 80) {
-            tournamentItem.style.transform = `translateX(-${deltaX}px)`;
-          }
-        });
-        
-        tournamentItem.addEventListener('touchend', function(e) {
-          if (!isDragging) return;
-          
-          isDragging = false;
-          tournamentItem.classList.remove('swiping');
-          
-          const deltaX = startX - currentX;
-          
-          if (deltaX > 40) {
-            // Show delete button
-            tournamentItem.classList.add('swipe-left');
-            tournamentItem.style.transform = '';
-          } else {
-            // Reset position
-            tournamentItem.classList.remove('swipe-left');
-            tournamentItem.style.transform = '';
-          }
-        });
-        
-        // Mouse events for desktop
-        tournamentItem.addEventListener('mousedown', function(e) {
-          startX = e.clientX;
-          isDragging = true;
-          hasTriggeredAction = false;
-          tournamentItem.classList.add('swiping');
-        });
-        
-        tournamentItem.addEventListener('mousemove', function(e) {
-          if (!isDragging) return;
-          
-          e.preventDefault();
-          currentX = e.clientX;
-          const deltaX = startX - currentX;
-          
-          if (deltaX > 0 && deltaX <= 80) {
-            tournamentItem.style.transform = `translateX(-${deltaX}px)`;
-          }
-        });
-        
-        tournamentItem.addEventListener('mouseup', function(e) {
-          if (!isDragging) return;
-          
-          isDragging = false;
-          tournamentItem.classList.remove('swiping');
-          
-          const deltaX = startX - currentX;
-          
-          if (deltaX > 40) {
-            // Show delete button
-            tournamentItem.classList.add('swipe-left');
-            tournamentItem.style.transform = '';
-          } else {
-            // Reset position and trigger click if it's a tap
-            tournamentItem.classList.remove('swipe-left');
-            tournamentItem.style.transform = '';
-            
-            if (Math.abs(deltaX) < 5 && !hasTriggeredAction) {
-              const tournamentId = this.dataset.tournamentId;
-              loadTournament(tournamentId);
-            }
-          }
-        });
-        
-        // Reset swipe state when clicking elsewhere
-        document.addEventListener('click', function(e) {
-          if (!tournamentItem.contains(e.target)) {
-            tournamentItem.classList.remove('swipe-left');
-            tournamentItem.style.transform = '';
-          }
-        });
-        
-        // Delete button click handler
-        deleteBtn.addEventListener('click', function(e) {
-          e.stopPropagation();
-          const tournamentId = this.dataset.tournamentId;
-          deleteTournament(tournamentId);
-        });
-        
-        // Regular click handler for tournament info (when not swiped)
+        // Simple click handler for tournament selection
         tournamentItem.addEventListener('click', function(e) {
-          if (!this.classList.contains('swipe-left') && !isDragging) {
-            const tournamentId = this.dataset.tournamentId;
-            loadTournament(tournamentId);
-          }
+          const tournamentId = this.dataset.tournamentId;
+          loadTournament(tournamentId);
         });
         
         tournamentsList.appendChild(tournamentItem);
@@ -3584,33 +3449,41 @@
       }
     }
 
-    // Delete a tournament
+    // Delete a tournament with admin pin verification
     function deleteTournament(tournamentId) {
-      if (confirm('Are you sure you want to delete this tournament? This action cannot be undone.')) {
-        // Remove from localStorage
-        delete appState.tournaments[tournamentId];
-        localStorage.setItem('padelAmericanoTournaments', JSON.stringify(appState.tournaments));
-        
-        // Remove from Firebase if available
-        if (window.firebaseDB && window.isFirebaseOnline) {
-          const tournamentRef = window.firebaseRef(window.firebaseDB, `tournaments/${tournamentId}`);
-          window.firebaseSet(tournamentRef, null)
-            .then(() => {
-              console.log('Tournament deleted from Firebase');
-            })
-            .catch(error => {
-              console.error('Error deleting from Firebase:', error);
-            });
+      // Ask for admin pin before proceeding
+      const adminPin = prompt('Enter admin PIN to delete this tournament:');
+      
+      // Check if pin is correct (PIN: 0704)
+      if (adminPin === '0704') {
+        if (confirm('PIN verified. Are you sure you want to delete this tournament? This action cannot be undone.')) {
+          // Remove from localStorage
+          delete appState.tournaments[tournamentId];
+          localStorage.setItem('padelAmericanoTournaments', JSON.stringify(appState.tournaments));
+          
+          // Remove from Firebase if available
+          if (window.firebaseDB && window.isFirebaseOnline) {
+            const tournamentRef = window.firebaseRef(window.firebaseDB, `tournaments/${tournamentId}`);
+            window.firebaseSet(tournamentRef, null)
+              .then(() => {
+                console.log('Tournament deleted from Firebase');
+              })
+              .catch(error => {
+                console.error('Error deleting from Firebase:', error);
+              });
+          }
+          
+          // Re-render tournament list
+          renderTournamentList();
+          
+          // If this was the current tournament, go back to tournament list
+          if (appState.currentTournament && appState.currentTournament.id === tournamentId) {
+            appState.currentTournament = null;
+            showScreen('tournamentListScreen');
+          }
         }
-        
-        // Re-render tournament list
-        renderTournamentList();
-        
-        // If this was the current tournament, go back to tournament list
-        if (appState.currentTournament && appState.currentTournament.id === tournamentId) {
-          appState.currentTournament = null;
-          showScreen('tournamentListScreen');
-        }
+      } else {
+        alert('Incorrect PIN. Tournament deletion canceled.');
       }
     }
 
@@ -4013,6 +3886,13 @@
       // Ensure bottom navigation is hidden on initial load
       updateNavigation('tournamentListScreen');
       
+      // Add tournament delete button handler
+      document.getElementById('tournamentDeleteBtn').addEventListener('click', function() {
+        if (appState.currentTournament) {
+          deleteTournament(appState.currentTournament.id);
+        }
+      });
+      
       // Back button
       document.getElementById('backBtn').addEventListener('click', function() {
         if (appState.currentScreen === 'settingsScreen') {
@@ -4079,9 +3959,8 @@
       // App info toggle
       document.getElementById('showAppInfoBtn').addEventListener('click', toggleAppInfo);
 
-      // New Tournament Button - Fix to ensure we go directly to setup screen
+      // New Tournament Button
       document.getElementById('newTournamentBtn').addEventListener('click', function() {
-        console.log('New tournament button clicked');
         updatePlayerCountDisplay();
         generatePlayerInputs(4);
         
@@ -4099,24 +3978,6 @@
         appState.tournamentType = 'mexicano';
         
         showScreen('setupScreen');
-        
-        // DIRECT FIX: Skip to tournament details to test player selection
-        setTimeout(() => {
-          console.log('Directly showing tournament details for testing');
-          document.getElementById('tournamentTypeCard').style.display = 'none';
-          document.getElementById('tournamentDetailsCard').style.display = 'block';
-          document.getElementById('tournamentTypeLabel').textContent = 'Mexicano';
-          
-          // Make sure players are loaded
-          if (appState.players.length === 0) {
-            console.log('No players found, loading from storage');
-            loadPlayersData();
-          }
-          
-          // Refresh the player list
-          refreshRegisteredPlayersList();
-          console.log('Player selection set up, players count:', appState.players.length);
-        }, 500);
       });
 
       // Player count range slider
@@ -4209,7 +4070,12 @@
       });
       
       // Additional click handler for Start Tournament button (in case form submission has issues)
-      document.getElementById('startTournamentBtn').addEventListener('click', function() {
+      document.getElementById('startTournamentBtn').addEventListener('click', function(e) {
+        // Prevent multiple clicks
+        if (this.disabled) {
+          e.preventDefault();
+          return;
+        }
         console.log('Start Tournament button clicked, submitting form');
         document.getElementById('setupForm').dispatchEvent(new Event('submit'));
       });
@@ -4287,6 +4153,9 @@
         
         // Initialize the tournament with the selected tournament type
         initTournament(tournamentName, playerNames, playerCount, courtCount, appState.tournamentType);
+        
+        // Prevent double submission by disabling the start tournament button
+        document.getElementById('startTournamentBtn').disabled = true;
       });
       
       // Navigation Tabs
@@ -4324,86 +4193,7 @@
       loadTournaments();
       loadPlayersData();
       
-      // Add a test player if none exist (for debugging)
-      if (appState.players.length === 0) {
-        console.log('No players found, adding test players for debugging');
-        appState.players = [
-          {
-            id: 'player-test-1',
-            name: 'Test Player 1',
-            skillLevel: 'intermediate',
-            notes: 'Test player for debugging',
-            createdAt: Date.now(),
-            statistics: { totalGames: 0, wins: 0, losses: 0, winPercentage: 0 }
-          },
-          {
-            id: 'player-test-2',
-            name: 'Test Player 2',
-            skillLevel: 'beginner',
-            notes: 'Test player for debugging',
-            createdAt: Date.now(),
-            statistics: { totalGames: 0, wins: 0, losses: 0, winPercentage: 0 }
-          },
-          {
-            id: 'player-test-3',
-            name: 'Test Player 3',
-            skillLevel: 'advanced',
-            notes: 'Test player for debugging',
-            createdAt: Date.now(),
-            statistics: { totalGames: 0, wins: 0, losses: 0, winPercentage: 0 }
-          },
-          {
-            id: 'player-test-4',
-            name: 'Test Player 4',
-            skillLevel: 'intermediate',
-            notes: 'Test player for debugging',
-            createdAt: Date.now(),
-            statistics: { totalGames: 0, wins: 0, losses: 0, winPercentage: 0 }
-          }
-        ];
-        // Save the test players
-        savePlayersData();
-        console.log('Added test players:', appState.players.length);
-        // Refresh the player lists
-        refreshPlayersList();
-        refreshRegisteredPlayersList();
-      }
-      
-      // EMERGENCY FIX: Direct test function for tournament creation with existing players
-      window.testCreateTournament = function() {
-        console.log('Test function: Creating tournament with existing players');
-        
-        // First make sure we have players
-        if (appState.players.length === 0) {
-          console.log('Adding test players for direct test');
-          loadPlayersData();
-          if (appState.players.length === 0) {
-            // Create test players if needed
-            appState.players = [
-              { id: 'player-direct-1', name: 'Direct Player 1' },
-              { id: 'player-direct-2', name: 'Direct Player 2' },
-              { id: 'player-direct-3', name: 'Direct Player 3' },
-              { id: 'player-direct-4', name: 'Direct Player 4' }
-            ];
-            savePlayersData();
-          }
-        }
-        
-        // Get player names to pass to tournament creation
-        const playerNames = appState.players.slice(0, 4).map(p => p.name);
-        console.log('Using players for tournament:', playerNames);
-        
-        // Create the tournament directly (bypassing UI)
-        const tournamentName = 'Test Tournament';
-        const playerCount = 4;
-        const courtCount = 1;
-        const tournamentType = 'mexicano';
-        
-        console.log('Creating tournament:', tournamentName);
-        initTournament(tournamentName, playerNames, playerCount, courtCount, tournamentType);
-        
-        console.log('Tournament creation test complete');
-      };
+      // Load tournaments and players on app start - no test data needed for production
     });
   </script>
 </body>
