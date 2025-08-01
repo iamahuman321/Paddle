@@ -4112,6 +4112,12 @@
             console.log('No players found, loading from storage');
             loadPlayersData();
           }
+          
+          // Refresh the player list
+          refreshRegisteredPlayersList();
+          console.log('Player selection set up, players count:', appState.players.length);
+        }, 500);
+      });
 
       // Player count range slider
       document.getElementById('playerCount').addEventListener('input', function() {
