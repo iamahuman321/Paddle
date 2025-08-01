@@ -130,10 +130,15 @@
     
     body.dark-mode .settings-title {
       border-bottom-color: var(--dark-border-color);
+      color: var(--dark-text-color) !important;
     }
     
     body.dark-mode .settings-option {
       border-bottom-color: var(--dark-border-color);
+    }
+    
+    body.dark-mode .settings-option-label {
+      color: var(--dark-text-color) !important;
     }
     
     body.dark-mode .about-link {
@@ -166,6 +171,8 @@
       min-height: 100vh;
       position: relative;
       padding-bottom: 60px; /* Space for bottom navigation */
+      scroll-behavior: smooth;
+      overscroll-behavior-y: none;
     }
 
     /* Header Styles */
@@ -173,6 +180,7 @@
       background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
       color: white;
       padding: 1rem;
+      padding-top: max(1rem, env(safe-area-inset-top));
       text-align: center;
       font-weight: bold;
       position: sticky;
@@ -200,10 +208,17 @@
       background: none;
       border: none;
       color: white;
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       cursor: pointer;
-      padding: 0.5rem;
+      padding: 1rem;
       transition: transform 0.2s ease;
+      min-height: 48px;
+      min-width: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     
     .header-action:hover {
@@ -224,7 +239,7 @@
       box-shadow: 0 6px 16px var(--shadow-color);
       padding: 1.5rem;
       margin-bottom: 1.5rem;
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       border: 1px solid var(--border-color);
     }
     
@@ -249,15 +264,19 @@
       color: var(--text-color);
       border: none;
       border-radius: 12px;
-      padding: 0.9rem 1.75rem;
+      padding: 1rem 2rem;
       font-weight: 600;
       cursor: pointer;
       display: inline-block;
       text-align: center;
-      transition: all 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       text-decoration: none;
       box-shadow: 0 4px 6px rgba(252, 211, 77, 0.25);
       font-size: 1rem;
+      min-height: 44px; /* Minimum touch target */
+      min-width: 44px;
+      touch-action: manipulation; /* Optimizes touch responsiveness */
+      -webkit-tap-highlight-color: transparent; /* Remove tap highlight on iOS */
     }
 
     .btn:hover {
@@ -319,8 +338,10 @@
     }
 
     .btn-small {
-      padding: 0.6rem 1.2rem;
+      padding: 0.75rem 1.5rem;
       font-size: 0.875rem;
+      min-height: 44px; /* Ensure touch target minimum */
+      min-width: 44px;
     }
     
     .btn i {
@@ -357,14 +378,17 @@
 
     .form-control {
       width: 100%;
-      padding: 1rem;
+      padding: 1.2rem;
       border: 2px solid var(--border-color);
       border-radius: 12px;
-      font-size: 1rem;
+      font-size: 1.1rem;
       transition: all 0.2s ease;
       background-color: #FFFFFF;
       color: var(--text-color);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      min-height: 48px; /* Better touch target */
+      touch-action: manipulation;
+      -webkit-appearance: none; /* Removes iOS default styling */
     }
     
     .form-control:hover {
@@ -385,6 +409,11 @@
       background-color: var(--dark-card-bg-color);
       border-color: var(--dark-border-color);
       color: var(--dark-text-color);
+    }
+    
+    body.dark-mode .form-control::placeholder {
+      color: #888888;
+      opacity: 1;
     }
     
     body.dark-mode .form-control:hover {
@@ -457,15 +486,23 @@
       display: none; /* Hidden by default, will be shown when needed */
       border-top: 1px solid var(--border-color);
       z-index: 100;
+      padding-bottom: env(safe-area-inset-bottom); /* Handle iOS notch */
     }
 
     .nav-item {
       flex: 1;
       text-align: center;
-      padding: 0.75rem;
+      padding: 1rem 0.75rem;
       color: var(--text-light);
       text-decoration: none;
       font-size: 0.875rem;
+      min-height: 48px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .nav-item.active {
@@ -478,7 +515,7 @@
 
     .nav-icon {
       display: block;
-      font-size: 1.25rem;
+      font-size: 1.5rem;
       margin-bottom: 0.25rem;
     }
 
@@ -490,7 +527,9 @@
       margin-bottom: 1.5rem;
       background-color: white;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      scroll-snap-align: start;
+      scroll-margin-top: 10px;
     }
     
     .match-card:hover {
@@ -610,17 +649,20 @@
     }
 
     .score-input {
-      width: 100px;
+      width: 120px;
       text-align: center;
       font-weight: bold;
-      padding: 0.75rem;
-      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border: 2px solid var(--border-color);
       border-radius: 12px;
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       background-color: var(--card-bg-color);
       color: var(--text-color);
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
       transition: all 0.2s ease;
+      min-height: 48px;
+      touch-action: manipulation;
+      -webkit-appearance: none;
     }
     
     .score-input:focus {
@@ -643,8 +685,37 @@
       color: var(--dark-text-color);
     }
     
+    body.dark-mode .score-input::placeholder {
+      color: #999999;
+      opacity: 1;
+    }
+    
     body.dark-mode .score-display {
       color: var(--dark-text-light);
+    }
+    
+    body.dark-mode .screen-title {
+      color: var(--dark-text-color) !important;
+    }
+    
+    body.dark-mode .empty-state h3 {
+      color: var(--dark-text-color) !important;
+    }
+    
+    body.dark-mode .empty-state p {
+      color: var(--dark-text-light) !important;
+    }
+    
+    body.dark-mode .team-name {
+      color: var(--dark-text-color) !important;
+    }
+    
+    body.dark-mode .team-players {
+      color: var(--dark-text-light) !important;
+    }
+    
+    body.dark-mode .match-title {
+      color: var(--dark-header-color) !important;
     }
 
     /* Rest Card Styles */
@@ -657,6 +728,8 @@
       text-align: center;
       position: relative;
       box-shadow: 0 4px 12px rgba(255, 183, 77, 0.15);
+      scroll-snap-align: start;
+      scroll-margin-top: 10px;
     }
     
     .rest-card:after {
@@ -745,17 +818,20 @@
 
     /* Tournament List Styles */
     .tournament-item {
-      padding: 1.75rem;
+      padding: 2rem;
       border-radius: 16px;
       margin-bottom: 1.5rem;
       background-color: #f5f5f5;
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       touch-action: pan-y;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
       border: 1px solid rgba(0, 0, 0, 0.05);
+      min-height: 48px;
+      -webkit-tap-highlight-color: transparent;
+      scroll-snap-align: start;
     }
 
     .tournament-item:hover {
@@ -768,6 +844,10 @@
       background-color: var(--dark-card-bg-color);
       border: 1px solid var(--dark-border-color);
       box-shadow: 0 4px 10px var(--dark-shadow-color);
+    }
+    
+    body.dark-mode .tournament-name {
+      color: var(--dark-text-color) !important;
     }
     
     body.dark-mode .tournament-item:hover {
@@ -873,9 +953,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem;
+      padding: 1.25rem;
       border-bottom: 1px solid var(--border-color);
       transition: all 0.2s ease;
+      min-height: 48px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      scroll-snap-align: start;
+      scroll-margin-top: 5px;
     }
     
     .leaderboard-item:hover {
@@ -961,10 +1046,15 @@
     .player-name {
       flex: 1;
       cursor: pointer;
-      padding: 0 0.5rem;
+      padding: 0.5rem;
       font-weight: 500;
       color: var(--text-color);
       transition: all 0.2s ease;
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     
     .player-name:hover {
@@ -994,14 +1084,16 @@
     
     body.dark-mode .rank {
       color: var(--dark-text-color);
+      background-color: rgba(255, 255, 255, 0.1);
     }
     
     body.dark-mode .player-name {
-      color: var(--dark-text-color);
+      color: var(--dark-text-color) !important;
     }
     
     body.dark-mode .player-score {
       color: var(--dark-text-color);
+      background-color: rgba(255, 255, 255, 0.08);
     }
 
     .screen-title {
@@ -1054,17 +1146,24 @@
       align-items: center;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none; /* Firefox */
-      padding: 0.5rem;
-      scroll-padding: 0.5rem;
-      gap: 0.75rem;
+      padding: 1rem;
+      scroll-padding: 1rem;
+      gap: 1rem;
+      scroll-behavior: smooth;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
     }
     
     .rounds-nav::-webkit-scrollbar {
       display: none; /* Chrome, Safari, Edge */
     }
+    
+    .round-tab, .add-round-btn {
+      scroll-snap-align: start;
+    }
 
     .round-tab {
-      padding: 0.75rem 1.25rem;
+      padding: 1rem 1.5rem;
       background-color: #f5f5f5;
       border-radius: 50px;
       white-space: nowrap;
@@ -1076,6 +1175,9 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
       display: flex;
       align-items: center;
+      min-height: 48px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     
     .round-tab:before {
@@ -1103,7 +1205,7 @@
     
     body.dark-mode .round-tab {
       background-color: var(--dark-border-color);
-      color: var(--dark-text-color);
+      color: var(--dark-text-color) !important;
       border: 1px solid rgba(255, 255, 255, 0.05);
     }
     
@@ -1118,7 +1220,7 @@
     }
 
     .add-round-btn {
-      padding: 0.75rem 1.25rem;
+      padding: 1rem 1.5rem;
       background-color: var(--success-color);
       color: white;
       border: none;
@@ -1130,6 +1232,9 @@
       align-items: center;
       transition: all 0.2s ease;
       box-shadow: 0 3px 6px rgba(16, 185, 129, 0.2);
+      min-height: 48px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     
     .add-round-btn:hover {
@@ -1266,6 +1371,8 @@
       width: 90%;
       max-height: 80vh;
       overflow-y: auto;
+      overscroll-behavior-y: contain;
+      scroll-behavior: smooth;
     }
 
     .modal-header {
@@ -1366,6 +1473,23 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
+      overscroll-behavior-y: contain;
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      -ms-overflow-style: none;
+    }
+    
+    .sidebar-content::-webkit-scrollbar {
+      width: 4px;
+    }
+    
+    .sidebar-content::-webkit-scrollbar-thumb {
+      background-color: rgba(0, 0, 0, 0.2);
+      border-radius: 4px;
+    }
+    
+    body.dark-mode .sidebar-content::-webkit-scrollbar-thumb {
+      background-color: rgba(255, 255, 255, 0.2);
     }
     
     .sidebar-menu {
@@ -1375,7 +1499,7 @@
     }
     
     .sidebar-menu-item {
-      padding: 1rem 1.25rem;
+      padding: 1.25rem 1.5rem;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -1384,10 +1508,13 @@
       color: var(--text-color);
       transition: all 0.2s ease;
       font-weight: 500;
+      min-height: 48px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
     }
     
     body.dark-mode .sidebar-menu-item {
-      color: var(--dark-text-color);
+      color: var(--dark-text-color) !important;
     }
     
     .sidebar-menu-item i {
@@ -1463,8 +1590,9 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 0;
+      padding: 1.25rem 0;
       border-bottom: 1px solid var(--border-color);
+      min-height: 48px;
     }
     
     .settings-option-label {
@@ -1626,6 +1754,9 @@
         <li class="sidebar-menu-item" data-page="players">
           <i class="fas fa-users"></i> Players
         </li>
+        <li class="sidebar-menu-item" data-page="rankings">
+          <i class="fas fa-medal"></i> Rankings
+        </li>
         <li class="sidebar-menu-item" data-page="settings">
           <i class="fas fa-cog"></i> Settings
         </li>
@@ -1649,7 +1780,7 @@
           <p style="color: var(--text-light); margin-top: 10px; font-size: 1rem; max-width: 80%; text-align: center; margin: 0.5rem auto;">Professional tournament management system</p>
         </div>
       </div>
-      <div id="tournamentsList">
+      <div id="tournamentsList" style="scroll-snap-type: y proximity; overscroll-behavior-y: contain; scroll-behavior: smooth;">
         <!-- Tournament list will be populated here -->
         <div class="empty-state" style="text-align: center; padding: 3rem 1.5rem;">
           <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background-color: #f0f0f0; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
@@ -1764,7 +1895,7 @@
             </div>
             
             <div id="existingPlayersPanel">
-              <div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem;">
+              <div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem; overscroll-behavior-y: contain; scroll-behavior: smooth;">
                 <div id="registeredPlayersList" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
                   <!-- Existing players will be populated here with checkboxes -->
                   <div class="empty-state" style="text-align: center; padding: 2rem; grid-column: span 2;">
@@ -1781,7 +1912,7 @@
             </div>
           </div>
           
-          <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;">
+          <button type="submit" class="btn btn-primary btn-block" style="margin-top: 1.5rem;" id="startTournamentBtn">
             <i class="fas fa-play"></i> Start Tournament
           </button>
           <button type="button" id="backToTypeBtn" class="btn btn-block" style="margin-top: 1rem;">
@@ -1810,7 +1941,7 @@
         </div>
       </div>
       
-      <div id="matchesContainer">
+      <div id="matchesContainer" style="scroll-snap-type: y proximity; overscroll-behavior-y: contain; scroll-behavior: smooth;">
         <!-- Matches will be displayed here -->
         
         <!-- Empty state will be replaced by actual matches -->
@@ -1841,7 +1972,7 @@
             <i class="fas fa-sort-alpha-down" style="margin-right: 5px;"></i> Name
           </div>
         </div>
-        <div id="playersList" style="max-height: 400px; overflow-y: auto;">
+        <div id="playersList" style="max-height: 400px; overflow-y: auto; overscroll-behavior-y: contain; scroll-behavior: smooth;">
           <!-- Player items will be populated here -->
           
           <!-- Empty state when no players are added -->
@@ -1875,7 +2006,7 @@
             <i class="fas fa-sort-amount-down" style="margin-right: 5px;"></i> Points
           </div>
         </div>
-        <div id="leaderboardList" style="max-height: 400px; overflow-y: auto;">
+        <div id="leaderboardList" style="max-height: 400px; overflow-y: auto; overscroll-behavior-y: contain; scroll-behavior: smooth;">
           <!-- Leaderboard items will be generated here -->
           
           <!-- Empty state will be replaced by actual data -->
@@ -1906,6 +2037,52 @@
     </div>
   </div>
   
+  <!-- Rankings Screen -->
+  <div id="rankingsScreen" class="screen">
+    <div class="container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+        <h2 class="screen-title" style="margin-bottom: 0;">
+          <i class="fas fa-medal" style="color: var(--primary-color); margin-right: 8px;"></i> Global Rankings
+        </h2>
+        <div style="font-size: 0.9rem; color: var(--text-light); display: flex; align-items: center;">
+          <i class="fas fa-chart-line" style="margin-right: 5px;"></i> All-time stats
+        </div>
+      </div>
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color);">
+          <div style="font-weight: 600; color: var(--text-color); font-size: 0.9rem;">GLOBAL LEADERBOARD</div>
+          <div style="font-size: 0.9rem; color: var(--text-light);">
+            <i class="fas fa-sort-amount-down" style="margin-right: 5px;"></i> Performance
+          </div>
+        </div>
+        <div id="globalRankingsList" style="max-height: 500px; overflow-y: auto; overscroll-behavior-y: contain; scroll-behavior: smooth;">
+          <!-- Global rankings will be populated here -->
+          
+          <!-- Empty state when no tournaments played -->
+          <div class="empty-state" style="text-align: center; padding: 2rem 1rem;">
+            <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background-color: #f0f0f0; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+              <i class="fas fa-medal" style="font-size: 2.5rem; color: var(--primary-color);"></i>
+            </div>
+            <h3 style="font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-color);">No rankings yet</h3>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">Play tournaments to build your global ranking</p>
+          </div>
+        </div>
+        
+        <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border-color);">
+          <h4 style="font-size: 1.1rem; margin-bottom: 1rem; display: flex; align-items: center;">
+            <i class="fas fa-info-circle" style="margin-right: 8px; color: var(--primary-color);"></i> 
+            Ranking System
+          </h4>
+          <div style="font-size: 0.9rem; color: var(--text-light); line-height: 1.5;">
+            <p style="margin-bottom: 0.5rem;"><strong>Performance Score:</strong> Average points per tournament</p>
+            <p style="margin-bottom: 0.5rem;"><strong>Win Rate:</strong> Percentage of matches won</p>
+            <p style="margin-bottom: 0;"><strong>Tournaments:</strong> Total tournaments played</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Settings Screen -->
   <div id="settingsScreen" class="screen">
     <div class="container">
@@ -2102,7 +2279,8 @@
       roundsScreen: document.getElementById('roundsScreen'),
       leaderboardScreen: document.getElementById('leaderboardScreen'),
       settingsScreen: document.getElementById('settingsScreen'),
-      playersScreen: document.getElementById('playersScreen')
+      playersScreen: document.getElementById('playersScreen'),
+      rankingsScreen: document.getElementById('rankingsScreen')
     };
 
     const navTabs = {
@@ -2142,6 +2320,7 @@
       const menuMap = {
         'tournamentListScreen': 'tournaments',
         'playersScreen': 'players',
+        'rankingsScreen': 'rankings',
         'settingsScreen': 'settings'
       };
       
@@ -2731,6 +2910,10 @@
 
     // Initialize a new tournament
     function initTournament(tournamentName, playerNames, playerCount, courtCount, tournamentType = 'mexicano') {
+      console.log('Initializing tournament:', tournamentName);
+      console.log('Player names:', playerNames);
+      console.log('Player count:', playerCount, 'Court count:', courtCount);
+      
       // Create player objects
       const players = playerNames.map((name, index) => ({
         id: `player-${index + 1}`,
@@ -2789,7 +2972,9 @@
 
     // Save players data to localStorage
     function savePlayersData() {
+      console.log('Saving players data, total players:', appState.players.length);
       localStorage.setItem('padelAmericanoPlayers', JSON.stringify(appState.players));
+      console.log('Players saved to localStorage');
       
       // Save to Firebase if available
       if (window.firebaseDB) {
@@ -2805,8 +2990,10 @@
     
     // Load players from localStorage or Firebase
     function loadPlayersData() {
+      console.log('Loading players data');
       // First try to load from localStorage
       const savedPlayers = JSON.parse(localStorage.getItem('padelAmericanoPlayers') || '[]');
+      console.log('Loaded players from localStorage:', savedPlayers.length);
       appState.players = savedPlayers;
       
       // Then try to load from Firebase
@@ -2888,12 +3075,17 @@
     
     // Refresh the registered players list for tournament setup
     function refreshRegisteredPlayersList() {
+      console.log('Refreshing registered players list, total players:', appState.players.length);
       const registeredPlayersList = document.getElementById('registeredPlayersList');
-      if (!registeredPlayersList) return;
+      if (!registeredPlayersList) {
+        console.log('registeredPlayersList element not found');
+        return;
+      }
       
       registeredPlayersList.innerHTML = '';
       
       if (appState.players.length === 0) {
+        console.log('No players to display');
         registeredPlayersList.innerHTML = `
           <div class="empty-state" style="text-align: center; padding: 2rem; grid-column: span 2;">
             <p>No saved players yet. Add players in the Players section.</p>
@@ -2904,6 +3096,7 @@
       
       // Sort players by name
       const sortedPlayers = [...appState.players].sort((a, b) => a.name.localeCompare(b.name));
+      console.log('Sorted players:', sortedPlayers.map(p => p.name));
       
       // Create player items with checkboxes
       sortedPlayers.forEach(player => {
@@ -2912,13 +3105,16 @@
         
         playerItem.innerHTML = `
           <label style="display: flex; align-items: center; cursor: pointer;">
-            <input type="checkbox" data-player-id="${player.id}" style="margin-right: 0.5rem;">
+            <input type="checkbox" data-player-id="${player.id}" style="margin-right: 0.5rem; min-width: 20px; min-height: 20px;">
             <span>${player.name}</span>
           </label>
         `;
         
         registeredPlayersList.appendChild(playerItem);
+        console.log('Added player to list:', player.name, 'with ID:', player.id);
       });
+      
+      console.log('Finished refreshing player list');
     }
     
     // Show player modal for add/edit
@@ -2953,6 +3149,112 @@
       modal.classList.add('active');
     }
     
+    // Calculate global player rankings across all tournaments
+    function calculateGlobalRankings() {
+      const globalStats = {};
+      
+      // Initialize stats for all players
+      appState.players.forEach(player => {
+        globalStats[player.id] = {
+          id: player.id,
+          name: player.name,
+          totalTournaments: 0,
+          totalPoints: 0,
+          totalMatches: 0,
+          totalWins: 0,
+          totalLosses: 0,
+          totalTies: 0,
+          totalPointsFor: 0,
+          totalPointsAgainst: 0,
+          averagePoints: 0,
+          winRate: 0,
+          performanceScore: 0
+        };
+      });
+      
+      // Aggregate stats from all tournaments
+      Object.values(appState.tournaments).forEach(tournament => {
+        if (tournament.players && tournament.players.length > 0) {
+          tournament.players.forEach(tournamentPlayer => {
+            const globalPlayer = appState.players.find(p => p.name === tournamentPlayer.name);
+            if (globalPlayer && globalStats[globalPlayer.id]) {
+              const stats = globalStats[globalPlayer.id];
+              stats.totalTournaments++;
+              stats.totalPoints += tournamentPlayer.score || 0;
+              stats.totalMatches += tournamentPlayer.matchesPlayed || 0;
+              stats.totalWins += tournamentPlayer.matchesWon || 0;
+              stats.totalLosses += tournamentPlayer.matchesLost || 0;
+              stats.totalTies += tournamentPlayer.matchesTied || 0;
+              stats.totalPointsFor += tournamentPlayer.pointsFor || 0;
+              stats.totalPointsAgainst += tournamentPlayer.pointsAgainst || 0;
+            }
+          });
+        }
+      });
+      
+      // Calculate derived metrics
+      Object.values(globalStats).forEach(stats => {
+        if (stats.totalTournaments > 0) {
+          stats.averagePoints = Math.round(stats.totalPoints / stats.totalTournaments);
+          stats.winRate = stats.totalMatches > 0 ? Math.round((stats.totalWins / stats.totalMatches) * 100) : 0;
+          stats.performanceScore = stats.averagePoints * (stats.winRate / 100) * Math.log(stats.totalTournaments + 1);
+        }
+      });
+      
+      // Filter and sort players who have played tournaments
+      return Object.values(globalStats)
+        .filter(stats => stats.totalTournaments > 0)
+        .sort((a, b) => {
+          if (b.performanceScore !== a.performanceScore) return b.performanceScore - a.performanceScore;
+          if (b.averagePoints !== a.averagePoints) return b.averagePoints - a.averagePoints;
+          return b.winRate - a.winRate;
+        });
+    }
+    
+    // Render global rankings
+    function renderGlobalRankings() {
+      const globalRankingsList = document.getElementById('globalRankingsList');
+      if (!globalRankingsList) return;
+      
+      const rankings = calculateGlobalRankings();
+      globalRankingsList.innerHTML = '';
+      
+      if (rankings.length === 0) {
+        globalRankingsList.innerHTML = `
+          <div class="empty-state" style="text-align: center; padding: 2rem 1rem;">
+            <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background-color: #f0f0f0; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
+              <i class="fas fa-medal" style="font-size: 2.5rem; color: var(--primary-color);"></i>
+            </div>
+            <h3 style="font-size: 1.4rem; margin-bottom: 1rem; color: var(--text-color);">No rankings yet</h3>
+            <p style="color: var(--text-light); margin-bottom: 1.5rem;">Play tournaments to build your global ranking</p>
+          </div>
+        `;
+        return;
+      }
+      
+      rankings.forEach((stats, index) => {
+        const rankingItem = document.createElement('div');
+        rankingItem.className = 'leaderboard-item';
+        
+        rankingItem.innerHTML = `
+          <div class="rank">${index + 1}</div>
+          <div style="flex: 1; padding: 0 1rem;">
+            <div class="player-name" style="font-size: 1.1rem; margin-bottom: 0.25rem;">${stats.name}</div>
+            <div style="font-size: 0.8rem; color: var(--text-light); display: flex; gap: 1rem;">
+              <span><i class="fas fa-trophy" style="margin-right: 3px;"></i> ${stats.totalTournaments} tournaments</span>
+              <span><i class="fas fa-percentage" style="margin-right: 3px;"></i> ${stats.winRate}% win rate</span>
+            </div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary-color);">${Math.round(stats.performanceScore)}</div>
+            <div style="font-size: 0.8rem; color: var(--text-light);">${stats.averagePoints} avg</div>
+          </div>
+        `;
+        
+        globalRankingsList.appendChild(rankingItem);
+      });
+    }
+
     // Save player from modal
     function savePlayer() {
       const form = document.getElementById('playerForm');
@@ -3751,6 +4053,9 @@
           } else if (page === 'players') {
             showScreen('playersScreen');
             refreshPlayersList();
+          } else if (page === 'rankings') {
+            showScreen('rankingsScreen');
+            renderGlobalRankings();
           }
           
           // Close sidebar
@@ -3774,8 +4079,9 @@
       // App info toggle
       document.getElementById('showAppInfoBtn').addEventListener('click', toggleAppInfo);
 
-      // New Tournament Button
+      // New Tournament Button - Fix to ensure we go directly to setup screen
       document.getElementById('newTournamentBtn').addEventListener('click', function() {
+        console.log('New tournament button clicked');
         updatePlayerCountDisplay();
         generatePlayerInputs(4);
         
@@ -3793,6 +4099,24 @@
         appState.tournamentType = 'mexicano';
         
         showScreen('setupScreen');
+        
+        // DIRECT FIX: Skip to tournament details to test player selection
+        setTimeout(() => {
+          console.log('Directly showing tournament details for testing');
+          document.getElementById('tournamentTypeCard').style.display = 'none';
+          document.getElementById('tournamentDetailsCard').style.display = 'block';
+          document.getElementById('tournamentTypeLabel').textContent = 'Mexicano';
+          
+          // Make sure players are loaded
+          if (appState.players.length === 0) {
+            console.log('No players found, loading from storage');
+            loadPlayersData();
+          }
+          
+          // Refresh the player list
+          refreshRegisteredPlayersList();
+          console.log('Player selection set up, players count:', appState.players.length);
+        }, 500);
       });
 
       // Player count range slider
@@ -3823,8 +4147,34 @@
         document.getElementById('tournamentTypeLabel').textContent = 
           appState.tournamentType === 'mexicano' ? 'Mexicano' : 'Americano';
         
+        console.log('Continue button clicked, setting up player selection');
+        // Make sure players are loaded before refreshing the list
+        if (appState.players.length === 0) {
+          console.log('No players found on continue, loading players data');
+          loadPlayersData();
+        }
+        
         // Set up player selection
         refreshRegisteredPlayersList();
+        console.log('Player selection set up, players count:', appState.players.length);
+        
+        // Force display of existing players
+        setTimeout(() => {
+          const existingPlayersTab = document.getElementById('existingPlayersTab');
+          const newPlayersTab = document.getElementById('newPlayersTab');
+          const existingPlayersPanel = document.getElementById('existingPlayersPanel');
+          const newPlayersPanel = document.getElementById('newPlayersPanel');
+          
+          existingPlayersTab.classList.add('active');
+          newPlayersTab.classList.remove('active');
+          existingPlayersTab.style.borderBottom = '2px solid var(--primary-color)';
+          newPlayersTab.style.borderBottom = '2px solid #e5e7eb';
+          existingPlayersPanel.style.display = 'block';
+          newPlayersPanel.style.display = 'none';
+          
+          console.log('Forced display of existing players tab');
+          refreshRegisteredPlayersList();
+        }, 200);
       });
       
       // Back to type selection button
@@ -3858,6 +4208,12 @@
         showPlayerModal('add');
       });
       
+      // Additional click handler for Start Tournament button (in case form submission has issues)
+      document.getElementById('startTournamentBtn').addEventListener('click', function() {
+        console.log('Start Tournament button clicked, submitting form');
+        document.getElementById('setupForm').dispatchEvent(new Event('submit'));
+      });
+      
       // Player modal form submission
       document.getElementById('playerForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -3877,28 +4233,57 @@
         const playerCount = parseInt(document.getElementById('playerCount').value, 10);
         const courtCount = parseInt(document.getElementById('courtCount').value, 10);
         
+        console.log('Tournament setup form submitted:', { tournamentName, playerCount, courtCount });
+        
         // Collect player names
         const playerNames = [];
         const existingPlayersPanel = document.getElementById('existingPlayersPanel');
         
-        // Check which player selection mode we're in
-        if (existingPlayersPanel.style.display !== 'none') {
+        // Check which player selection mode we're in by looking at active tab
+        const existingPlayersTab = document.getElementById('existingPlayersTab');
+        const isExistingPlayersActive = existingPlayersTab.classList.contains('active');
+        
+        console.log('Existing players tab active:', isExistingPlayersActive);
+        
+        if (isExistingPlayersActive) {
           // Get checked players from existing players
           const checkedPlayers = document.querySelectorAll('#registeredPlayersList input[type="checkbox"]:checked');
+          console.log('Checked players:', checkedPlayers.length);
+          
           checkedPlayers.forEach(checkbox => {
             const playerId = checkbox.getAttribute('data-player-id');
+            console.log('Processing player ID:', playerId);
             const player = appState.players.find(p => p.id === playerId);
             if (player) {
               playerNames.push(player.name);
+              console.log('Added player:', player.name);
+            } else {
+              console.log('Player not found with ID:', playerId);
             }
           });
+          
+          // Validate we have enough players selected
+          if (playerNames.length < playerCount) {
+            alert(`Please select ${playerCount} players or switch to "New Players" tab to enter player names.`);
+            console.log('Not enough players selected:', playerNames.length, 'needed:', playerCount);
+            return;
+          }
+          
+          // Trim to exact count if more selected
+          if (playerNames.length > playerCount) {
+            playerNames.splice(playerCount);
+            console.log('Trimmed players to:', playerNames.length);
+          }
         } else {
           // Get player names from inputs
           for (let i = 1; i <= playerCount; i++) {
             const playerName = document.getElementById(`player${i}`).value.trim();
             playerNames.push(playerName || `Player ${i}`);
           }
+          console.log('New player names:', playerNames);
         }
+        
+        console.log('Final player names:', playerNames);
         
         // Initialize the tournament with the selected tournament type
         initTournament(tournamentName, playerNames, playerCount, courtCount, appState.tournamentType);
@@ -3938,6 +4323,87 @@
       // Load tournaments and players on app start
       loadTournaments();
       loadPlayersData();
+      
+      // Add a test player if none exist (for debugging)
+      if (appState.players.length === 0) {
+        console.log('No players found, adding test players for debugging');
+        appState.players = [
+          {
+            id: 'player-test-1',
+            name: 'Test Player 1',
+            skillLevel: 'intermediate',
+            notes: 'Test player for debugging',
+            createdAt: Date.now(),
+            statistics: { totalGames: 0, wins: 0, losses: 0, winPercentage: 0 }
+          },
+          {
+            id: 'player-test-2',
+            name: 'Test Player 2',
+            skillLevel: 'beginner',
+            notes: 'Test player for debugging',
+            createdAt: Date.now(),
+            statistics: { totalGames: 0, wins: 0, losses: 0, winPercentage: 0 }
+          },
+          {
+            id: 'player-test-3',
+            name: 'Test Player 3',
+            skillLevel: 'advanced',
+            notes: 'Test player for debugging',
+            createdAt: Date.now(),
+            statistics: { totalGames: 0, wins: 0, losses: 0, winPercentage: 0 }
+          },
+          {
+            id: 'player-test-4',
+            name: 'Test Player 4',
+            skillLevel: 'intermediate',
+            notes: 'Test player for debugging',
+            createdAt: Date.now(),
+            statistics: { totalGames: 0, wins: 0, losses: 0, winPercentage: 0 }
+          }
+        ];
+        // Save the test players
+        savePlayersData();
+        console.log('Added test players:', appState.players.length);
+        // Refresh the player lists
+        refreshPlayersList();
+        refreshRegisteredPlayersList();
+      }
+      
+      // EMERGENCY FIX: Direct test function for tournament creation with existing players
+      window.testCreateTournament = function() {
+        console.log('Test function: Creating tournament with existing players');
+        
+        // First make sure we have players
+        if (appState.players.length === 0) {
+          console.log('Adding test players for direct test');
+          loadPlayersData();
+          if (appState.players.length === 0) {
+            // Create test players if needed
+            appState.players = [
+              { id: 'player-direct-1', name: 'Direct Player 1' },
+              { id: 'player-direct-2', name: 'Direct Player 2' },
+              { id: 'player-direct-3', name: 'Direct Player 3' },
+              { id: 'player-direct-4', name: 'Direct Player 4' }
+            ];
+            savePlayersData();
+          }
+        }
+        
+        // Get player names to pass to tournament creation
+        const playerNames = appState.players.slice(0, 4).map(p => p.name);
+        console.log('Using players for tournament:', playerNames);
+        
+        // Create the tournament directly (bypassing UI)
+        const tournamentName = 'Test Tournament';
+        const playerCount = 4;
+        const courtCount = 1;
+        const tournamentType = 'mexicano';
+        
+        console.log('Creating tournament:', tournamentName);
+        initTournament(tournamentName, playerNames, playerCount, courtCount, tournamentType);
+        
+        console.log('Tournament creation test complete');
+      };
     });
   </script>
 </body>
