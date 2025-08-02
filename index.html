@@ -1727,7 +1727,7 @@
           <i class="fas fa-users"></i> Players
         </li>
         <li class="sidebar-menu-item" data-page="rankings">
-          <i class="fas fa-medal"></i> Rankings
+          <i class="fas fa-chart-bar"></i> Statistics
         </li>
         <li class="sidebar-menu-item" data-page="settings">
           <i class="fas fa-cog"></i> Settings
@@ -1752,7 +1752,7 @@
           <p style="color: var(--text-light); margin-top: 10px; font-size: 1rem; max-width: 80%; text-align: center; margin: 0.5rem auto;">Professional tournament management system</p>
         </div>
       </div>
-      <div id="tournamentsList" style="scroll-snap-type: y proximity; overscroll-behavior-y: contain; scroll-behavior: smooth;">
+      <div id="tournamentsList" style="scroll-snap-type: y proximity; overscroll-behavior-y: contain; scroll-behavior: smooth; max-height: 65vh; overflow-y: auto;">
         <!-- Tournament list will be populated here -->
         <div class="empty-state" style="text-align: center; padding: 3rem 1.5rem;">
           <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background-color: #f0f0f0; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
@@ -1867,7 +1867,7 @@
             </div>
             
             <div id="existingPlayersPanel">
-              <div style="max-height: 250px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem; overscroll-behavior-y: contain; scroll-behavior: smooth;">
+              <div style="max-height: 50vh; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem; overscroll-behavior-y: contain; scroll-behavior: smooth;">
                 <div id="registeredPlayersList" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
                   <!-- Existing players will be populated here with checkboxes -->
                   <div class="empty-state" style="text-align: center; padding: 2rem; grid-column: span 2;">
@@ -1918,7 +1918,7 @@
         </div>
       </div>
       
-      <div id="matchesContainer" style="scroll-snap-type: y proximity; overscroll-behavior-y: contain; scroll-behavior: smooth;">
+      <div id="matchesContainer" style="scroll-snap-type: y proximity; overscroll-behavior-y: contain; scroll-behavior: smooth; max-height: 65vh; overflow-y: auto;">
         <!-- Matches will be displayed here -->
         
         <!-- Empty state will be replaced by actual matches -->
@@ -1949,7 +1949,7 @@
             <i class="fas fa-sort-alpha-down" style="margin-right: 5px;"></i> Name
           </div>
         </div>
-        <div id="playersList" style="max-height: 400px; overflow-y: auto; overscroll-behavior-y: contain; scroll-behavior: smooth;">
+        <div id="playersList" style="max-height: 65vh; overflow-y: auto; overscroll-behavior-y: contain; scroll-behavior: smooth;">
           <!-- Player items will be populated here -->
           
           <!-- Empty state when no players are added -->
@@ -1970,7 +1970,7 @@
     <div class="container">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
         <h2 class="screen-title" style="margin-bottom: 0;">
-          <i class="fas fa-trophy" style="color: var(--primary-color); margin-right: 8px;"></i> Leaderboard
+          <i class="fas fa-trophy" style="color: var(--primary-color); margin-right: 8px;"></i> Statistics
         </h2>
         <div style="font-size: 0.9rem; color: var(--text-light); display: flex; align-items: center;">
           <i class="fas fa-sync-alt" style="margin-right: 5px;"></i> Live updating
@@ -1978,18 +1978,18 @@
       </div>
       <div class="card">
         <div style="display: flex; justify-content: space-between; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border-color);">
-          <div style="font-weight: 600; color: var(--text-color); font-size: 0.9rem;">PLAYER RANKINGS</div>
+          <div style="font-weight: 600; color: var(--text-color); font-size: 0.9rem;">PLAYER STATISTICS</div>
           <div style="font-size: 0.9rem; color: var(--text-light);">
-            <i class="fas fa-sort-amount-down" style="margin-right: 5px;"></i> Points
+            <i class="fas fa-chart-bar" style="margin-right: 5px;"></i> Summary
           </div>
         </div>
-        <div id="leaderboardList" style="max-height: 400px; overflow-y: auto; overscroll-behavior-y: contain; scroll-behavior: smooth;">
-          <!-- Leaderboard items will be generated here -->
+        <div id="leaderboardList" style="padding: 0; display: flex; flex-direction: column; gap: 0; max-width: 100%; overflow-x: hidden;">
+          <!-- Statistics will be generated here -->
           
           <!-- Empty state will be replaced by actual data -->
           <div class="empty-state" style="text-align: center; padding: 2rem 1rem;">
             <img src="https://cdn.pixabay.com/photo/2021/09/10/06/47/paddle-tennis-6612340_150.jpg" alt="Trophy" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; margin-bottom: 1rem; opacity: 0.7;">
-            <p style="color: var(--text-light); margin-bottom: 0;">Complete matches to see player rankings</p>
+            <p style="color: var(--text-light); margin-bottom: 0;">Complete matches to see player statistics</p>
           </div>
         </div>
         
@@ -2032,7 +2032,7 @@
             <i class="fas fa-sort-amount-down" style="margin-right: 5px;"></i> Performance
           </div>
         </div>
-        <div id="globalRankingsList" style="max-height: 500px; overflow-y: auto; overscroll-behavior-y: contain; scroll-behavior: smooth;">
+        <div id="globalRankingsList" style="max-height: 65vh; overflow-y: auto; overscroll-behavior-y: contain; scroll-behavior: smooth;">
           <!-- Global rankings will be populated here -->
           
           <!-- Empty state when no tournaments played -->
@@ -2051,9 +2051,10 @@
             Ranking System
           </h4>
           <div style="font-size: 0.9rem; color: var(--text-light); line-height: 1.5;">
-            <p style="margin-bottom: 0.5rem;"><strong>Performance Score:</strong> Average points per tournament</p>
+            <p style="margin-bottom: 0.5rem;"><strong>Performance Rating:</strong> Overall player skill (0-100)</p>
             <p style="margin-bottom: 0.5rem;"><strong>Win Rate:</strong> Percentage of matches won</p>
-            <p style="margin-bottom: 0;"><strong>Tournaments:</strong> Total tournaments played</p>
+            <p style="margin-bottom: 0.5rem;"><strong>Average Points:</strong> Points earned per tournament</p>
+            <p style="margin-bottom: 0;"><strong>Goal Difference:</strong> Points scored minus points conceded</p>
           </div>
         </div>
       </div>
@@ -2828,40 +2829,55 @@
       roundsNav.appendChild(addRoundBtn);
     }
 
-    // Render leaderboard with simplified display
+    // Render leaderboard
     function renderLeaderboard() {
       const leaderboardList = document.getElementById('leaderboardList');
       leaderboardList.innerHTML = '';
       
-      // Sort players by multiple criteria
-      const sortedPlayers = [...appState.currentTournament.players].sort((a, b) => {
-        // Primary: Total points
-        if (b.score !== a.score) return b.score - a.score;
-        // Secondary: Goal difference (points for - points against)
-        const aDiff = a.pointsFor - a.pointsAgainst;
-        const bDiff = b.pointsFor - b.pointsAgainst;
-        if (bDiff !== aDiff) return bDiff - aDiff;
-        // Tertiary: Points scored
-        return b.pointsFor - a.pointsFor;
-      });
+      if (!appState.currentTournament || !appState.currentTournament.players) {
+        leaderboardList.innerHTML = `
+          <div class="empty-state" style="text-align: center; padding: 2rem 1rem;">
+            <img src="https://cdn.pixabay.com/photo/2021/09/10/06/47/paddle-tennis-6612340_150.jpg" alt="Trophy" style="width: 100px; height: 100px; object-fit: cover; border-radius: 50%; margin-bottom: 1rem; opacity: 0.7;">
+            <p style="color: var(--text-light); margin-bottom: 0;">No players found</p>
+          </div>
+        `;
+        return;
+      }
       
+      // Sort players by score (simple sorting)
+      const sortedPlayers = [...appState.currentTournament.players]
+        .sort((a, b) => (b.score || 0) - (a.score || 0));
+      
+      // Create simple player list
       sortedPlayers.forEach((player, index) => {
         const leaderboardItem = document.createElement('div');
         leaderboardItem.className = 'leaderboard-item';
-        leaderboardItem.dataset.playerId = player.id;
-        
-        leaderboardItem.innerHTML = `
-          <div class="rank">${index + 1}</div>
-          <div class="player-name">${player.name}</div>
-          <div class="player-score">${player.score}</div>
+        leaderboardItem.style.cssText = `
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding: 0.75rem;
+          border-bottom: 1px solid var(--border-color);
+          background-color: ${index === 0 ? 'rgba(106, 38, 205, 0.05)' : 'transparent'};
         `;
         
-        // Add click event for player name editing
-        const playerNameElement = leaderboardItem.querySelector('.player-name');
-        playerNameElement.addEventListener('click', function() {
-          const playerId = leaderboardItem.dataset.playerId;
-          editPlayerName(playerId);
-        });
+        leaderboardItem.innerHTML = `
+          <div style="display: flex; align-items: center;">
+            <div class="rank" style="min-width: 30px; min-height: 30px; display: flex; align-items: center; justify-content: center; background-color: ${index === 0 ? 'var(--primary-color)' : 'rgba(0, 0, 0, 0.05)'}; color: ${index === 0 ? 'white' : 'var(--text-color)'}; border-radius: 50%; margin-right: 10px; font-weight: bold; font-size: 0.9rem; flex-shrink: 0;">${index + 1}</div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="font-weight: 600; font-size: 1rem; color: var(--text-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${player.name}</div>
+              <div style="font-size: 0.7rem; color: var(--text-light); line-height: 1.3;">
+                ${player.matchesPlayed || 0} matches
+                <br>
+                <span title="Win-Loss-Tie Record"><i class="fas fa-gamepad" style="margin-right: 2px;"></i> ${player.matchesWon || 0}-${player.matchesLost || 0}-${player.matchesTied || 0}</span>
+              </div>
+            </div>
+          </div>
+          <div style="text-align: right; flex-shrink: 0;">
+            <div style="font-size: 1.3rem; font-weight: bold; color: var(--primary-color);">${player.score || 0}</div>
+            <div style="font-size: 0.7rem; color: var(--text-light);">points</div>
+          </div>
+        `;
         
         leaderboardList.appendChild(leaderboardItem);
       });
@@ -3143,9 +3159,12 @@
           totalTies: 0,
           totalPointsFor: 0,
           totalPointsAgainst: 0,
+          pointsDifference: 0,
+          totalRests: 0,
           averagePoints: 0,
           winRate: 0,
-          performanceScore: 0
+          skillLevel: player.skillLevel || 'intermediate',
+          performanceRating: 0 // More intuitive name than "performanceScore"
         };
       });
       
@@ -3153,7 +3172,17 @@
       Object.values(appState.tournaments).forEach(tournament => {
         if (tournament.players && tournament.players.length > 0) {
           tournament.players.forEach(tournamentPlayer => {
-            const globalPlayer = appState.players.find(p => p.name === tournamentPlayer.name);
+            // First try to match by ID if it exists
+            let globalPlayer = null;
+            if (tournamentPlayer.id) {
+              globalPlayer = appState.players.find(p => p.id === tournamentPlayer.id);
+            }
+            
+            // Fallback to matching by name if needed
+            if (!globalPlayer) {
+              globalPlayer = appState.players.find(p => p.name === tournamentPlayer.name);
+            }
+            
             if (globalPlayer && globalStats[globalPlayer.id]) {
               const stats = globalStats[globalPlayer.id];
               stats.totalTournaments++;
@@ -3164,17 +3193,37 @@
               stats.totalTies += tournamentPlayer.matchesTied || 0;
               stats.totalPointsFor += tournamentPlayer.pointsFor || 0;
               stats.totalPointsAgainst += tournamentPlayer.pointsAgainst || 0;
+              stats.totalRests += tournamentPlayer.restsCount || 0;
             }
           });
         }
       });
       
-      // Calculate derived metrics
+      // Calculate derived metrics with improved formulas
       Object.values(globalStats).forEach(stats => {
         if (stats.totalTournaments > 0) {
+          // Calculate average points per tournament
           stats.averagePoints = Math.round(stats.totalPoints / stats.totalTournaments);
+          
+          // Calculate win rate percentage
           stats.winRate = stats.totalMatches > 0 ? Math.round((stats.totalWins / stats.totalMatches) * 100) : 0;
-          stats.performanceScore = stats.averagePoints * (stats.winRate / 100) * Math.log(stats.totalTournaments + 1);
+          
+          // Calculate points difference (for/against)
+          stats.pointsDifference = stats.totalPointsFor - stats.totalPointsAgainst;
+          
+          // Calculate performance rating using a more balanced formula
+          // This formula gives weight to win percentage, points difference, and tournament experience
+          const winFactor = stats.winRate / 100; // Convert percentage to factor between 0-1
+          const tournamentExperience = Math.min(Math.log(stats.totalTournaments + 1), 2); // Cap experience factor
+          const pointsImpact = Math.min(Math.abs(stats.pointsDifference) / 100, 1) * (stats.pointsDifference >= 0 ? 1 : -0.5);
+          
+          // Create a more balanced score (0-100 scale)
+          stats.performanceRating = Math.round(
+            (winFactor * 50) + // Win rate contributes up to 50 points
+            (tournamentExperience * 15) + // Experience contributes up to 30 points
+            (pointsImpact * 20) + // Points difference contributes up to 20 points
+            (stats.averagePoints / 3) // Average points contributes up to ~15 points
+          );
         }
       });
       
@@ -3182,13 +3231,18 @@
       return Object.values(globalStats)
         .filter(stats => stats.totalTournaments > 0)
         .sort((a, b) => {
-          if (b.performanceScore !== a.performanceScore) return b.performanceScore - a.performanceScore;
+          // Primary: Performance rating
+          if (b.performanceRating !== a.performanceRating) return b.performanceRating - a.performanceRating;
+          // Secondary: Win rate
+          if (b.winRate !== a.winRate) return b.winRate - a.winRate;
+          // Tertiary: Average points
           if (b.averagePoints !== a.averagePoints) return b.averagePoints - a.averagePoints;
-          return b.winRate - a.winRate;
+          // Quaternary: Points difference
+          return b.pointsDifference - a.pointsDifference;
         });
     }
     
-    // Render global rankings
+    // Render global rankings with improved display
     function renderGlobalRankings() {
       const globalRankingsList = document.getElementById('globalRankingsList');
       if (!globalRankingsList) return;
@@ -3209,27 +3263,75 @@
         return;
       }
       
+      // Add player rankings using responsive cards instead of table
       rankings.forEach((stats, index) => {
         const rankingItem = document.createElement('div');
-        rankingItem.className = 'leaderboard-item';
+        rankingItem.className = 'global-ranking-card';
+        rankingItem.style.cssText = `
+          padding: 1rem;
+          border-bottom: 1px solid var(--border-color);
+          background-color: ${index === 0 ? 'rgba(106, 38, 205, 0.05)' : 'transparent'};
+          width: 100%;
+          box-sizing: border-box;
+        `;
+        
+        // Determine skill level badge
+        let skillBadge = '';
+        if (stats.skillLevel) {
+          const skillColors = {
+            'beginner': '#6c757d',
+            'intermediate': '#28a745',
+            'advanced': '#dc3545',
+            'pro': '#6A26CD'
+          };
+          
+          const skillColor = skillColors[stats.skillLevel] || '#6c757d';
+          skillBadge = `<span style="font-size: 0.7rem; background-color: ${skillColor}; color: white; padding: 0.1rem 0.3rem; border-radius: 4px; margin-left: 0.5rem;">${stats.skillLevel}</span>`;
+        }
+        
+        // Format the goal difference
+        const goalDiffFormatted = stats.pointsDifference > 0 ? `+${stats.pointsDifference}` : stats.pointsDifference;
+        const goalDiffColor = stats.pointsDifference > 0 ? '#28a745' : (stats.pointsDifference < 0 ? '#dc3545' : '#6c757d');
         
         rankingItem.innerHTML = `
-          <div class="rank">${index + 1}</div>
-          <div style="flex: 1; padding: 0 1rem;">
-            <div class="player-name" style="font-size: 1.1rem; margin-bottom: 0.25rem;">${stats.name}</div>
-            <div style="font-size: 0.8rem; color: var(--text-light); display: flex; gap: 1rem;">
-              <span><i class="fas fa-trophy" style="margin-right: 3px;"></i> ${stats.totalTournaments} tournaments</span>
-              <span><i class="fas fa-percentage" style="margin-right: 3px;"></i> ${stats.winRate}% win rate</span>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center;">
+              <div class="rank" style="min-width: 35px; min-height: 35px; display: flex; align-items: center; justify-content: center; background-color: ${index === 0 ? 'var(--primary-color)' : 'rgba(0, 0, 0, 0.05)'}; color: ${index === 0 ? 'white' : 'var(--text-color)'}; border-radius: 50%; margin-right: 12px; font-weight: bold; font-size: 1rem;">${index + 1}</div>
+              <div>
+                <div style="font-weight: 600; font-size: 1.1rem; color: var(--text-color); display: flex; align-items: center;">
+                  ${stats.name}${skillBadge}
+                </div>
+                <div style="font-size: 0.75rem; color: var(--text-light); margin-top: 0.25rem;">
+                  <span title="Tournaments Played"><i class="fas fa-trophy" style="margin-right: 3px;"></i> ${stats.totalTournaments}</span>
+                  <span style="margin-left: 0.75rem;" title="Goal Difference"><i class="fas fa-exchange-alt" style="margin-right: 3px; color: ${goalDiffColor};"></i> <span style="color: ${goalDiffColor};">${goalDiffFormatted}</span></span>
+                  <span style="margin-left: 0.75rem;" title="Win-Loss-Tie Record"><i class="fas fa-gamepad" style="margin-right: 3px;"></i> ${stats.totalWins}-${stats.totalLosses}-${stats.totalTies}</span>
+                </div>
+              </div>
             </div>
           </div>
-          <div style="text-align: right;">
-            <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary-color);">${Math.round(stats.performanceScore)}</div>
-            <div style="font-size: 0.8rem; color: var(--text-light);">${stats.averagePoints} avg</div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 0.5rem; width: 100%;">
+            <div style="padding: 0.75rem; background-color: rgba(106, 38, 205, 0.1); border-radius: 8px; text-align: center;">
+              <div style="font-size: 1.5rem; font-weight: bold; color: var(--primary-color); margin-bottom: 0.25rem;">${stats.totalPoints}</div>
+              <div style="font-size: 0.8rem; color: var(--text-color); font-weight: 500;">Total Points</div>
+            </div>
+            
+            <div style="padding: 0.75rem; background-color: rgba(16, 185, 129, 0.1); border-radius: 8px; text-align: center;">
+              <div style="font-size: 1.5rem; font-weight: bold; color: var(--success-color); margin-bottom: 0.25rem;">${stats.winRate}%</div>
+              <div style="font-size: 0.8rem; color: var(--text-color); font-weight: 500;">Win Rate</div>
+            </div>
+            
+            <div style="padding: 0.75rem; background-color: rgba(252, 211, 77, 0.1); border-radius: 8px; text-align: center;">
+              <div style="font-size: 1.5rem; font-weight: bold; color: #F59E0B; margin-bottom: 0.25rem;">${stats.averagePoints}</div>
+              <div style="font-size: 0.8rem; color: var(--text-color); font-weight: 500;">Avg Pts</div>
+            </div>
           </div>
         `;
         
         globalRankingsList.appendChild(rankingItem);
       });
+      
+
     }
 
     // Save player from modal
@@ -3935,7 +4037,11 @@
             refreshPlayersList();
           } else if (page === 'rankings') {
             showScreen('rankingsScreen');
-            renderGlobalRankings();
+            // Improved global rankings with a delay to ensure screen transition is complete
+            setTimeout(() => {
+              console.log("Refreshing global rankings...");
+              renderGlobalRankings();
+            }, 100);
           }
           
           // Close sidebar
