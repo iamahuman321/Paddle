@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -172,26 +173,185 @@
       color: var(--text-color);
       min-height: 100vh;
       position: relative;
-      padding-bottom: 60px; /* Space for bottom navigation */
-      scroll-behavior: smooth;
-      overscroll-behavior-y: none;
+      padding-bottom: 40px; /* Reduced space for smaller bottom navigation */
+      scroll-behavior: auto; /* Disable smooth scrolling */
+      overscroll-behavior: none; /* Prevent bounce effects */
+      -webkit-overflow-scrolling: auto; /* Disable momentum scrolling */
+      touch-action: pan-y; /* Allow only vertical scrolling */
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+    }
+    
+    /* Enable text selection for input fields and content areas */
+    input, textarea, .form-control, p, h1, h2, h3, h4, h5, h6, span {
+      -webkit-user-select: text;
+      -khtml-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text;
+    }
+
+    /* PIN Popup Modal Styles */
+    .pin-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    .pin-modal.active {
+      display: flex;
+      opacity: 1;
+    }
+    
+    .pin-modal-content {
+      background-color: var(--card-bg-color);
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      max-width: 320px;
+      width: 90%;
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+    
+    .pin-modal.active .pin-modal-content {
+      transform: scale(1);
+    }
+    
+    body.dark-mode .pin-modal-content {
+      background-color: var(--dark-card-bg-color);
+      color: var(--dark-text-color);
+    }
+    
+    .pin-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+      color: var(--text-color);
+    }
+    
+    body.dark-mode .pin-title {
+      color: var(--dark-text-color);
+    }
+    
+    .pin-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      margin-bottom: 1.5rem;
+    }
+    
+    body.dark-mode .pin-subtitle {
+      color: var(--dark-text-light);
+    }
+    
+    .pin-input {
+      width: 100%;
+      padding: 1rem;
+      font-size: 1.2rem;
+      text-align: center;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      background-color: var(--light-bg-color);
+      letter-spacing: 0.3em;
+      font-family: monospace;
+    }
+    
+    .pin-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(106, 38, 205, 0.1);
+      outline: none;
+    }
+    
+    body.dark-mode .pin-input {
+      background-color: var(--dark-bg-color);
+      border-color: var(--dark-border-color);
+      color: var(--dark-text-color);
+    }
+    
+    body.dark-mode .pin-input:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(126, 58, 215, 0.2);
+    }
+    
+    .pin-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .pin-btn {
+      flex: 1;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+    
+    .pin-btn.cancel {
+      background-color: var(--border-color);
+      color: var(--text-color);
+    }
+    
+    .pin-btn.cancel:hover {
+      background-color: #D1D5DB;
+    }
+    
+    .pin-btn.confirm {
+      background-color: var(--danger-color);
+      color: white;
+    }
+    
+    .pin-btn.confirm:hover {
+      background-color: #DC2626;
+    }
+    
+    body.dark-mode .pin-btn.cancel {
+      background-color: var(--dark-border-color);
+      color: var(--dark-text-color);
+    }
+    
+    body.dark-mode .pin-btn.cancel:hover {
+      background-color: #404040;
     }
 
     /* Header Styles */
     .app-header {
       background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
       color: white;
-      padding: 1rem;
-      padding-top: max(1rem, env(safe-area-inset-top));
+      padding: 0.5rem;
+      padding-top: max(0.5rem, env(safe-area-inset-top));
       text-align: center;
       font-weight: bold;
-      position: sticky;
+      position: fixed;
       top: 0;
-      z-index: 100;
+      left: 0;
+      right: 0;
+      z-index: 200;
       display: flex;
       justify-content: space-between;
       align-items: center;
       box-shadow: 0 2px 8px var(--shadow-color);
+      min-height: 50px;
+      max-height: 50px;
     }
     
     body.dark-mode .app-header {
@@ -202,20 +362,20 @@
     .header-title {
       flex: 1;
       text-align: center;
-      font-size: 1.25rem;
-      letter-spacing: 0.5px;
+      font-size: 1rem;
+      letter-spacing: 0.3px;
     }
 
     .header-action {
       background: none;
       border: none;
       color: white;
-      font-size: 1.5rem;
+      font-size: 1.2rem;
       cursor: pointer;
-      padding: 1rem;
+      padding: 0.6rem;
       transition: transform 0.2s ease;
-      min-height: 48px;
-      min-width: 48px;
+      min-height: 40px;
+      min-width: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -227,27 +387,74 @@
       transform: scale(1.1);
     }
 
-    /* Container Styles */
-    .container {
-      padding: 1.5rem;
-      max-width: 600px;
-      margin: 0 auto;
+    /* Screen Layout - Fixed positioning */
+    .screen {
+      display: none;
+      opacity: 0;
+      transform: none;
+      transition: opacity 0.3s ease;
+      position: fixed;
+      top: 50px; /* Always below header */
+      left: 0;
+      right: 0;
+      bottom: 60px; /* Always above bottom nav */
+      background-color: var(--light-bg-color);
+      z-index: 1;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-top: 1rem; /* Consistent top spacing */
+      padding-bottom: 1rem; /* Consistent bottom spacing */
+    }
+    
+    body.dark-mode .screen {
+      background-color: var(--dark-bg-color);
+    }
+    
+    .screen.active {
+      display: block;
+      opacity: 1;
+      transform: none;
+      z-index: 10;
     }
 
-    /* Card Styles */
+    /* Container Styles - Mobile Optimized */
+    .container {
+      padding: 0 1.2rem;
+      max-width: 100%;
+      margin: 0 auto;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    @media (min-width: 768px) {
+      .container {
+        max-width: 600px;
+        padding: 0 1.5rem;
+      }
+    }
+
+    /* Card Styles - Mobile Optimized */
     .card {
       background-color: var(--card-bg-color);
-      border-radius: 16px;
-      box-shadow: 0 6px 16px var(--shadow-color);
-      padding: 1.5rem;
+      border-radius: 18px;
+      box-shadow: 0 6px 18px var(--shadow-color);
+      padding: 1.6rem;
       margin-bottom: 1.5rem;
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.25s ease;
       border: 1px solid var(--border-color);
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      position: relative;
+      overflow: hidden;
     }
     
     .card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px var(--shadow-color);
+      box-shadow: 0 4px 8px var(--shadow-color);
+    }
+
+    .card:active {
+      background-color: #FAFAFA;
+      box-shadow: 0 2px 6px var(--shadow-color);
     }
     
     body.dark-mode .card {
@@ -260,35 +467,38 @@
       box-shadow: 0 8px 20px var(--dark-shadow-color);
     }
 
-    /* Button Styles */
+    /* Button Styles - Mobile Optimized */
     .btn {
       background-color: var(--accent-color);
       color: var(--text-color);
       border: none;
       border-radius: 12px;
-      padding: 1rem 2rem;
+      padding: 1.2rem 2rem;
       font-weight: 600;
       cursor: pointer;
       display: inline-block;
       text-align: center;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
       text-decoration: none;
-      box-shadow: 0 4px 6px rgba(252, 211, 77, 0.25);
-      font-size: 1rem;
-      min-height: 44px; /* Minimum touch target */
-      min-width: 44px;
-      touch-action: manipulation; /* Optimizes touch responsiveness */
-      -webkit-tap-highlight-color: transparent; /* Remove tap highlight on iOS */
+      box-shadow: 0 4px 12px rgba(252, 211, 77, 0.3);
+      font-size: 1.1rem;
+      min-height: 52px; /* Larger touch target for mobile */
+      min-width: 52px;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      position: relative;
+      overflow: hidden;
     }
 
     .btn:hover {
       background-color: #F59E0B;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 8px rgba(252, 211, 77, 0.35);
+      box-shadow: 0 2px 6px rgba(252, 211, 77, 0.25);
     }
     
     .btn:active {
-      transform: translateY(1px);
+      background-color: #E59000; /* Slightly darker when pressed */
+      box-shadow: 0 1px 3px rgba(252, 211, 77, 0.2);
     }
 
     .btn-block {
@@ -357,17 +567,17 @@
       margin-right: 6px;
     }
 
-    /* Form Styles */
+    /* Form Styles - Mobile Optimized */
     .form-group {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.8rem;
     }
 
     .form-label {
       display: flex;
       align-items: center;
-      margin-bottom: 0.75rem;
+      margin-bottom: 1rem;
       font-weight: 600;
-      font-size: 1rem;
+      font-size: 1.1rem;
       color: var(--text-color);
     }
     
@@ -387,17 +597,19 @@
 
     .form-control {
       width: 100%;
-      padding: 1.2rem;
+      padding: 1.4rem;
       border: 2px solid var(--border-color);
-      border-radius: 12px;
-      font-size: 1.1rem;
-      transition: all 0.2s ease;
+      border-radius: 16px;
+      font-size: 1.2rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       background-color: #FFFFFF;
       color: var(--text-color);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-      min-height: 48px; /* Better touch target */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+      min-height: 56px; /* Larger touch target for mobile */
       touch-action: manipulation;
-      -webkit-appearance: none; /* Removes iOS default styling */
+      -webkit-appearance: none;
+      user-select: text;
+      position: relative;
     }
     
     .form-control:hover {
@@ -496,16 +708,17 @@
       border-top: 1px solid var(--border-color);
       z-index: 100;
       padding-bottom: env(safe-area-inset-bottom); /* Handle iOS notch */
+      min-height: 40px;
     }
 
     .nav-item {
       flex: 1;
       text-align: center;
-      padding: 1rem 0.75rem;
+      padding: 0.5rem 0.5rem;
       color: var(--text-light);
       text-decoration: none;
-      font-size: 0.875rem;
-      min-height: 48px;
+      font-size: 0.75rem;
+      min-height: 36px;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -524,8 +737,8 @@
 
     .nav-icon {
       display: block;
-      font-size: 1.5rem;
-      margin-bottom: 0.25rem;
+      font-size: 1.2rem;
+      margin-bottom: 0.15rem;
     }
 
     /* Match Card Styles */
@@ -816,37 +1029,67 @@
       background-color: rgba(0, 0, 0, 0.2);
     }
 
-    /* Screens */
-    .screen {
+    /* Remove duplicate screen definition */
+    
+    /* Hide scrollbars */
+    .screen::-webkit-scrollbar {
       display: none;
+    }
+
+    body.dark-mode .screen {
+      background-color: var(--dark-bg-color);
     }
 
     .screen.active {
       display: block;
+      opacity: 1;
+      transform: none;
+      z-index: 10;
+    }
+    
+    /* Simple active state for touch */
+    .active-touch {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
+    
+    body.dark-mode .active-touch {
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
-    /* Tournament List Styles */
+    /* Page container for better mobile layout */
+    .page-container {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Tournament List Styles - Mobile Touch Optimized */
     .tournament-item {
-      padding: 1.5rem;
-      border-radius: 16px;
+      padding: 1.8rem;
+      border-radius: 20px;
       margin-bottom: 1.5rem;
-      background-color: #f5f5f5;
+      background-color: #f8f9fa;
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      touch-action: pan-y;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      touch-action: manipulation;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
       border: 1px solid rgba(0, 0, 0, 0.05);
-      min-height: 48px;
+      min-height: 60px;
       -webkit-tap-highlight-color: transparent;
-      scroll-snap-align: start;
+      user-select: none;
+      z-index: 10; /* Ensure it's above other elements */
     }
 
     .tournament-item:hover {
-      background-color: #eeeeee;
-      transform: translateY(-3px);
-      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.08);
+      background-color: #f5f5f5;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .tournament-item:active {
+      background-color: #f0f0f0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     }
     
     body.dark-mode .tournament-item {
@@ -1113,14 +1356,14 @@
     .rounds-nav {
       display: flex;
       overflow-x: auto;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
       align-items: center;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none; /* Firefox */
-      padding: 1rem;
-      scroll-padding: 1rem;
-      gap: 1rem;
+      padding: 0.5rem;
+      scroll-padding: 0.5rem;
+      gap: 0.5rem;
       scroll-behavior: smooth;
       overscroll-behavior-x: contain;
       scroll-snap-type: x proximity;
@@ -1135,35 +1378,36 @@
     }
 
     .round-tab {
-      padding: 1rem 1.5rem;
+      padding: 0.6rem 1rem;
       background-color: #f5f5f5;
-      border-radius: 50px;
+      border-radius: 25px;
       white-space: nowrap;
       cursor: pointer;
       color: var(--text-color);
       font-weight: 500;
       transition: all 0.2s ease;
       border: 1px solid rgba(0, 0, 0, 0.05);
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
       display: flex;
       align-items: center;
-      min-height: 48px;
+      min-height: 32px;
+      font-size: 0.85rem;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
     
     .round-tab:before {
       content: "🔄";
-      margin-right: 6px;
-      font-size: 0.9rem;
+      margin-right: 4px;
+      font-size: 0.8rem;
     }
 
     .round-tab.active {
       background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
       color: white;
-      box-shadow: 0 3px 8px var(--shadow-color);
+      box-shadow: 0 2px 6px var(--shadow-color);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      transform: translateY(-2px);
+      transform: translateY(-1px);
     }
     
     .round-tab.active:before {
@@ -1188,35 +1432,36 @@
     body.dark-mode .round-tab.active {
       background: linear-gradient(135deg, var(--dark-gradient-start), var(--dark-gradient-end));
       color: white;
-      box-shadow: 0 3px 8px var(--dark-shadow-color);
+      box-shadow: 0 2px 6px var(--dark-shadow-color);
     }
 
     .add-round-btn {
-      padding: 1rem 1.5rem;
+      padding: 0.6rem 1rem;
       background-color: var(--success-color);
       color: white;
       border: none;
-      border-radius: 50px;
+      border-radius: 25px;
       cursor: pointer;
       white-space: nowrap;
       font-weight: 500;
       display: flex;
       align-items: center;
       transition: all 0.2s ease;
-      box-shadow: 0 3px 6px rgba(16, 185, 129, 0.2);
-      min-height: 48px;
+      box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+      min-height: 32px;
+      font-size: 0.85rem;
       touch-action: manipulation;
       -webkit-tap-highlight-color: transparent;
     }
     
     .add-round-btn:hover {
       background-color: #059669;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(16, 185, 129, 0.25);
+      transform: translateY(-1px);
+      box-shadow: 0 3px 6px rgba(16, 185, 129, 0.25);
     }
     
     .add-round-btn i {
-      margin-right: 6px;
+      margin-right: 4px;
     }
 
     .loading {
@@ -1329,10 +1574,13 @@
       align-items: center;
       justify-content: center;
       z-index: 1000;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
     .modal.active {
       display: flex;
+      opacity: 1;
     }
 
     .modal-content {
@@ -1345,6 +1593,14 @@
       overflow-y: auto;
       overscroll-behavior-y: contain;
       scroll-behavior: smooth;
+      transform: scale(0.8);
+      opacity: 0;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    
+    .modal.active .modal-content {
+      transform: scale(1);
+      opacity: 1;
     }
 
     .modal-header {
@@ -1367,7 +1623,7 @@
       color: var(--text-light);
     }
     
-    /* Sidebar Styles */
+    /* Sidebar Styles with enhanced animations */
     .sidebar {
       position: fixed;
       top: 0;
@@ -1376,7 +1632,7 @@
       height: 100vh;
       background-color: white;
       z-index: 2000;
-      transition: all 0.3s ease;
+      transition: left 0.3s ease;
       box-shadow: 2px 0 20px rgba(0, 0, 0, 0.15);
       display: flex;
       flex-direction: column;
@@ -1478,7 +1734,7 @@
       border-radius: 12px;
       margin-bottom: 0.5rem;
       color: var(--text-color);
-      transition: all 0.2s ease;
+      transition: all 0.3s ease;
       font-weight: 500;
       min-height: 48px;
       touch-action: manipulation;
@@ -1539,10 +1795,13 @@
       background-color: rgba(0, 0, 0, 0.5);
       z-index: 1500;
       display: none;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
     
     .overlay.active {
       display: block;
+      opacity: 1;
     }
     
     /* Settings Page Styles */
@@ -1689,6 +1948,8 @@
   </style>
 </head>
 <body>
+  <!-- Page wrapper for mobile app experience -->
+  <div class="page-container">
   <!-- App Header -->
   <header class="app-header">
     <button id="backBtn" class="header-action" style="display: none;">
@@ -1741,6 +2002,19 @@
   
   <!-- Overlay for sidebar -->
   <div id="overlay" class="overlay"></div>
+  
+  <!-- PIN Modal -->
+  <div id="pinModal" class="pin-modal">
+    <div class="pin-modal-content">
+      <h3 class="pin-title">Enter PIN</h3>
+      <p class="pin-subtitle">Please enter your PIN to confirm this action</p>
+      <input type="password" id="pinInput" class="pin-input" maxlength="4" placeholder="----">
+      <div class="pin-buttons">
+        <button class="pin-btn cancel" onclick="closePinModal()">Cancel</button>
+        <button class="pin-btn confirm" onclick="confirmPinAction()">Confirm</button>
+      </div>
+    </div>
+  </div>
 
   <!-- Tournament List Screen -->
   <div id="tournamentListScreen" class="screen active">
@@ -1752,7 +2026,7 @@
           <p style="color: var(--text-light); margin-top: 10px; font-size: 1rem; max-width: 80%; text-align: center; margin: 0.5rem auto;">Professional tournament management system</p>
         </div>
       </div>
-      <div id="tournamentsList" style="scroll-snap-type: y proximity; overscroll-behavior-y: contain; scroll-behavior: smooth; max-height: 65vh; overflow-y: auto;">
+      <div id="tournamentsList">
         <!-- Tournament list will be populated here -->
         <div class="empty-state" style="text-align: center; padding: 3rem 1.5rem;">
           <div style="width: 80px; height: 80px; margin: 0 auto 1.5rem; background-color: #f0f0f0; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
@@ -1867,7 +2141,7 @@
             </div>
             
             <div id="existingPlayersPanel">
-              <div style="max-height: 50vh; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem; overscroll-behavior-y: contain; scroll-behavior: smooth;">
+              <div style="border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem;">
                 <div id="registeredPlayersList" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.5rem;">
                   <!-- Existing players will be populated here with checkboxes -->
                   <div class="empty-state" style="text-align: center; padding: 2rem; grid-column: span 2;">
@@ -1918,7 +2192,7 @@
         </div>
       </div>
       
-      <div id="matchesContainer" style="scroll-snap-type: y proximity; overscroll-behavior-y: contain; scroll-behavior: smooth; max-height: 65vh; overflow-y: auto;">
+      <div id="matchesContainer">
         <!-- Matches will be displayed here -->
         
         <!-- Empty state will be replaced by actual matches -->
@@ -1949,7 +2223,7 @@
             <i class="fas fa-sort-alpha-down" style="margin-right: 5px;"></i> Name
           </div>
         </div>
-        <div id="playersList" style="max-height: 65vh; overflow-y: auto; overscroll-behavior-y: contain; scroll-behavior: smooth;">
+        <div id="playersList">
           <!-- Player items will be populated here -->
           
           <!-- Empty state when no players are added -->
@@ -2032,7 +2306,7 @@
             <i class="fas fa-sort-amount-down" style="margin-right: 5px;"></i> Performance
           </div>
         </div>
-        <div id="globalRankingsList" style="max-height: 65vh; overflow-y: auto; overscroll-behavior-y: contain; scroll-behavior: smooth;">
+        <div id="globalRankingsList">
           <!-- Global rankings will be populated here -->
           
           <!-- Empty state when no tournaments played -->
@@ -2164,7 +2438,7 @@
   <canvas id="exportCanvas" style="display: none;"></canvas>
 
   <!-- Firebase SDK -->
-  <script src="https://lib.youware.com/youware-lib-consumer.1752562065.js" id="yourware-lib"></script><script type="module">
+  <script src="https://lib.youware.com/youware-lib-consumer.1752562065.js" id="yourware-lib"></script><script src="https://lib.youware.com/youware-lib-consumer.1752562065.js" id="yourware-lib"></script><script type="module">
     // Import Firebase functions
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
     import { getDatabase, ref, set, onValue, off } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-database.js';
@@ -2308,6 +2582,30 @@
           menuItem.classList.add('active');
         }
       }
+      
+      // Prevent scrolling if content fits within viewport
+      setTimeout(() => {
+        checkAndPreventScrolling(screenId);
+      }, 100);
+    }
+    
+    // Function to check if content fits in viewport and prevent scrolling if it does
+    function checkAndPreventScrolling(screenId) {
+      const screen = screens[screenId];
+      if (!screen) return;
+      
+      const screenContent = screen.querySelector('.container');
+      if (!screenContent) return;
+      
+      const screenHeight = screen.clientHeight;
+      const contentHeight = screenContent.scrollHeight;
+      
+      // If content is shorter than screen, prevent scrolling
+      if (contentHeight <= screenHeight) {
+        screen.style.overflowY = 'hidden';
+      } else {
+        screen.style.overflowY = 'auto';
+      }
     }
 
     // Update header based on current screen
@@ -2315,22 +2613,16 @@
       const backBtn = document.getElementById('backBtn');
       const menuBtn = document.getElementById('menuBtn');
       
-      if (screenId === 'tournamentListScreen') {
-        backBtn.style.display = 'none';
-        menuBtn.style.display = 'block';
-      } else if (screenId === 'roundsScreen' || screenId === 'leaderboardScreen') {
-        backBtn.style.display = 'block';
-        menuBtn.style.display = 'none';
-      } else {
-        backBtn.style.display = 'block';
-        menuBtn.style.display = 'none';
-      }
+      // Show the menu button for all screens, remove back button completely
+      backBtn.style.display = 'none';
+      menuBtn.style.display = 'block';
     }
 
     // Update navigation visibility
     function updateNavigation(screenId) {
       const bottomNav = document.querySelector('.bottom-nav');
-      if (screenId === 'roundsScreen' || screenId === 'leaderboardScreen') {
+      // Only show bottom nav when inside a tournament (not on home/other screens)
+      if (appState.currentTournament && (screenId === 'roundsScreen' || screenId === 'leaderboardScreen')) {
         bottomNav.style.display = 'flex';
         
         // Update active tab
@@ -3110,9 +3402,10 @@
       console.log('Finished refreshing player list');
     }
     
-    // Show player modal for add/edit
+    // Show player modal for add/edit with animation
     function showPlayerModal(mode, playerId = null) {
       const modal = document.getElementById('playerModal');
+      const modalContent = modal.querySelector('.modal-content');
       const titleEl = document.getElementById('playerModalTitle');
       const nameInput = document.getElementById('playerName');
       const skillLevelSelect = document.getElementById('playerSkillLevel');
@@ -3139,7 +3432,18 @@
         document.getElementById('playerForm').dataset.mode = 'add';
       }
       
-      modal.classList.add('active');
+      // Show modal first without animation
+      modal.style.display = 'flex';
+      
+      // Trigger animation after a small delay
+      setTimeout(() => {
+        modal.classList.add('active');
+      }, 10);
+      
+      // Focus on the name input after animation completes
+      setTimeout(() => {
+        nameInput.focus();
+      }, 350);
     }
     
     // Calculate global player rankings across all tournaments
@@ -3334,11 +3638,12 @@
 
     }
 
-    // Save player from modal
+    // Save player from modal with animated closure
     function savePlayer() {
       const form = document.getElementById('playerForm');
       const mode = form.dataset.mode;
       const playerId = form.dataset.playerId;
+      const modal = document.getElementById('playerModal');
       
       const name = document.getElementById('playerName').value.trim();
       const skillLevel = document.getElementById('playerSkillLevel').value;
@@ -3381,8 +3686,13 @@
       refreshPlayersList();
       refreshRegisteredPlayersList();
       
-      // Close modal
-      document.getElementById('playerModal').classList.remove('active');
+      // Close modal with animation
+      modal.classList.remove('active');
+      
+      // Hide modal completely after animation completes
+      setTimeout(() => {
+        modal.style.display = 'none';
+      }, 300);
     }
     
     // Save tournament data to Firebase and localStorage with real-time sync
@@ -3482,6 +3792,11 @@
     // Render tournament list
     function renderTournamentList() {
       const tournamentsList = document.getElementById('tournamentsList');
+      if (!tournamentsList) {
+        console.error('Tournament list container not found');
+        return;
+      }
+      
       tournamentsList.innerHTML = '';
       
       const tournaments = Object.values(appState.tournaments);
@@ -3500,12 +3815,16 @@
       }
       
       // Sort tournaments by creation date (newest first)
-      tournaments.sort((a, b) => b.createdAt - a.createdAt);
+      tournaments.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
       
       tournaments.forEach(tournament => {
         const tournamentItem = document.createElement('div');
         tournamentItem.className = 'tournament-item';
         tournamentItem.dataset.tournamentId = tournament.id;
+        
+        // Add specific styles for better clickability
+        tournamentItem.style.position = 'relative';
+        tournamentItem.style.zIndex = '10';
         
         tournamentItem.innerHTML = `
           <div class="tournament-info">
@@ -3518,15 +3837,43 @@
             </div>
             <div class="tournament-meta-item">
               <i class="fas fa-users"></i>
-              ${tournament.playerCount} players
+              ${tournament.playerCount || tournament.players?.length || 0} players
             </div>
           </div>
         `;
         
-        // Simple click handler for tournament selection
-        tournamentItem.addEventListener('click', function(e) {
-          const tournamentId = this.dataset.tournamentId;
-          loadTournament(tournamentId);
+        // Make the entire item a clickable button for better tap experience
+        tournamentItem.setAttribute('role', 'button');
+        tournamentItem.setAttribute('tabindex', '0');
+        tournamentItem.setAttribute('aria-label', `Open ${tournament.name} tournament`);
+        
+        // Direct click handler using the tournament ID directly instead of accessing dataset
+        const tournamentId = tournament.id;
+        tournamentItem.onclick = function(e) {
+          try {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Tournament item clicked directly:', tournamentId);
+            loadTournament(tournamentId);
+            return false;
+          } catch (error) {
+            console.error('Error handling tournament item click:', error);
+            alert('Error loading tournament. Please try again.');
+          }
+        };
+        
+        // Also add keyboard accessibility
+        tournamentItem.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            try {
+              console.log('Tournament item activated via keyboard:', tournamentId);
+              loadTournament(tournamentId);
+            } catch (error) {
+              console.error('Error handling tournament keyboard activation:', error);
+              alert('Error loading tournament. Please try again.');
+            }
+          }
         });
         
         tournamentsList.appendChild(tournamentItem);
@@ -3537,17 +3884,29 @@
     function loadTournament(tournamentId) {
       const tournament = appState.tournaments[tournamentId];
       if (tournament) {
+        console.log('Loading tournament:', tournament.name);
         appState.currentTournament = tournament;
         
-        // Navigate to rounds screen
-        showScreen('roundsScreen');
-        
-        // Render round tabs and matches
-        renderRoundTabs();
-        renderMatches(tournament.currentRound || 0);
-        
-        // Render leaderboard
-        renderLeaderboard();
+        try {
+          // Navigate to rounds screen
+          showScreen('roundsScreen');
+          
+          // Render round tabs and matches
+          renderRoundTabs();
+          renderMatches(tournament.currentRound || 0);
+          
+          // Render leaderboard
+          renderLeaderboard();
+        } catch (error) {
+          console.error('Error loading tournament:', error);
+          // Fallback - if there's an error, reset and show tournament list
+          alert('Error loading tournament. Please try again.');
+          appState.currentTournament = null;
+          showScreen('tournamentListScreen');
+        }
+      } else {
+        console.error('Tournament not found:', tournamentId);
+        alert('Tournament not found');
       }
     }
 
@@ -3942,12 +4301,39 @@
       });
     }
 
-    // Toggle sidebar menu
+    // Toggle sidebar menu with consistent animation
     function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('overlay');
-      sidebar.classList.toggle('active');
-      overlay.classList.toggle('active');
+      try {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        
+        if (sidebar && overlay) {
+          // Add animation classes
+          if (sidebar.classList.contains('active')) {
+            // Closing animation
+            sidebar.style.transition = 'left 0.3s ease';
+            overlay.style.transition = 'opacity 0.3s ease';
+            overlay.style.opacity = '0';
+            
+            // First animate, then remove active class
+            setTimeout(() => {
+              sidebar.classList.remove('active');
+              overlay.classList.remove('active');
+            }, 300);
+          } else {
+            // Opening animation
+            sidebar.style.transition = 'left 0.3s ease';
+            sidebar.classList.add('active');
+            overlay.classList.add('active');
+            overlay.style.transition = 'opacity 0.3s ease';
+            overlay.style.opacity = '1';
+          }
+        } else {
+          console.error('Sidebar or overlay element not found');
+        }
+      } catch (error) {
+        console.error('Error toggling sidebar:', error);
+      }
     }
     
     // Toggle dark mode
@@ -3974,6 +4360,24 @@
       appInfoSection.style.display = appInfoSection.style.display === 'none' ? 'block' : 'none';
     }
 
+    // Function to click on a tournament item (helper function for debugging)
+    function clickTournamentItem(tournamentId) {
+      try {
+        const tournamentItem = document.querySelector(`.tournament-item[data-tournament-id="${tournamentId}"]`);
+        if (tournamentItem) {
+          tournamentItem.click();
+        } else {
+          console.error('Tournament item not found:', tournamentId);
+          // Fallback to direct loading
+          loadTournament(tournamentId);
+        }
+      } catch (error) {
+        console.error('Error clicking tournament item:', error);
+        // Fallback to direct loading
+        loadTournament(tournamentId);
+      }
+    }
+    
     // Event Listeners
     document.addEventListener('DOMContentLoaded', function() {
       // Apply dark mode setting from localStorage
@@ -3985,26 +4389,30 @@
         }
       }
       
+      // Add window resize handler for scroll prevention
+      window.addEventListener('resize', function() {
+        checkAndPreventScrolling(appState.currentScreen);
+      });
+      
       // Ensure bottom navigation is hidden on initial load
       updateNavigation('tournamentListScreen');
       
-      // Add tournament delete button handler
+      // Add tournament delete button handler with animation feedback
       document.getElementById('tournamentDeleteBtn').addEventListener('click', function() {
-        if (appState.currentTournament) {
-          deleteTournament(appState.currentTournament.id);
-        }
+        // Add animation feedback
+        this.style.transform = 'scale(0.95)';
+        setTimeout(() => {
+          this.style.transform = 'none';
+          if (appState.currentTournament) {
+            deleteTournament(appState.currentTournament.id);
+          }
+        }, 100);
       });
       
-      // Back button
+      // Back button - keep the listener but change the behavior to use sidebar
       document.getElementById('backBtn').addEventListener('click', function() {
-        if (appState.currentScreen === 'settingsScreen') {
-          showScreen('tournamentListScreen');
-        } else if (appState.currentScreen === 'roundsScreen' || appState.currentScreen === 'leaderboardScreen') {
-          showScreen('tournamentListScreen');
-          appState.currentTournament = null;
-        } else {
-          showScreen('tournamentListScreen');
-        }
+        // Instead of direct navigation, just toggle the sidebar menu
+        toggleSidebar();
       });
 
       // Menu button - toggle sidebar
@@ -4016,10 +4424,13 @@
       // Overlay click to close sidebar
       document.getElementById('overlay').addEventListener('click', toggleSidebar);
       
-      // Sidebar menu items
+      // Sidebar menu items with animation feedback
       document.querySelectorAll('.sidebar-menu-item').forEach(item => {
         item.addEventListener('click', function() {
           const page = this.dataset.page;
+          
+          // Add animation feedback
+          this.style.transform = 'scale(0.95)';
           
           // Update active menu item
           document.querySelectorAll('.sidebar-menu-item').forEach(menuItem => {
@@ -4027,25 +4438,30 @@
           });
           this.classList.add('active');
           
-          // Show selected screen
-          if (page === 'tournaments') {
-            showScreen('tournamentListScreen');
-          } else if (page === 'settings') {
-            showScreen('settingsScreen');
-          } else if (page === 'players') {
-            showScreen('playersScreen');
-            refreshPlayersList();
-          } else if (page === 'rankings') {
-            showScreen('rankingsScreen');
-            // Improved global rankings with a delay to ensure screen transition is complete
-            setTimeout(() => {
-              console.log("Refreshing global rankings...");
-              renderGlobalRankings();
-            }, 100);
-          }
-          
-          // Close sidebar
-          toggleSidebar();
+          // Slight delay for visual feedback before transition
+          setTimeout(() => {
+            this.style.transform = 'none';
+            
+            // Show selected screen
+            if (page === 'tournaments') {
+              showScreen('tournamentListScreen');
+            } else if (page === 'settings') {
+              showScreen('settingsScreen');
+            } else if (page === 'players') {
+              showScreen('playersScreen');
+              refreshPlayersList();
+            } else if (page === 'rankings') {
+              showScreen('rankingsScreen');
+              // Improved global rankings with a delay to ensure screen transition is complete
+              setTimeout(() => {
+                console.log("Refreshing global rankings...");
+                renderGlobalRankings();
+              }, 300);
+            }
+            
+            // Close sidebar
+            toggleSidebar();
+          }, 100);
         });
       });
 
@@ -4066,25 +4482,56 @@
       document.getElementById('showAppInfoBtn').addEventListener('click', toggleAppInfo);
 
       // New Tournament Button
-      document.getElementById('newTournamentBtn').addEventListener('click', function() {
-        updatePlayerCountDisplay();
-        generatePlayerInputs(4);
+      // New Tournament Button with enhanced error handling and direct navigation
+      const newTournamentBtn = document.getElementById('newTournamentBtn');
+      if (newTournamentBtn) {
+        // Remove any existing event listeners
+        newTournamentBtn.replaceWith(newTournamentBtn.cloneNode(true));
         
-        // Reset tournament type selection and show the type selection card
-        document.getElementById('tournamentTypeCard').style.display = 'block';
-        document.getElementById('tournamentDetailsCard').style.display = 'none';
+        // Get the fresh reference after replacement
+        const freshNewTournamentBtn = document.getElementById('newTournamentBtn');
         
-        // Reset any previously selected tournament type
-        const typeOptions = document.querySelectorAll('.tournament-type-option');
-        typeOptions.forEach(option => {
-          option.style.borderColor = '#e5e7eb';
+        // Add the new event listener
+        freshNewTournamentBtn.addEventListener('click', function(e) {
+          try {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('New Tournament button clicked - direct handler');
+            
+            // Prepare setup screen
+            updatePlayerCountDisplay();
+            generatePlayerInputs(4);
+            
+            // Reset tournament type selection and show the type selection card
+            const typeCard = document.getElementById('tournamentTypeCard');
+            const detailsCard = document.getElementById('tournamentDetailsCard');
+            
+            if (typeCard && detailsCard) {
+              typeCard.style.display = 'block';
+              detailsCard.style.display = 'none';
+            } else {
+              console.error('Tournament cards not found');
+            }
+            
+            // Navigate to setup screen
+            showScreen('setupScreen');
+            
+            // Reset any previously selected tournament type
+            const typeOptions = document.querySelectorAll('.tournament-type-option');
+            typeOptions.forEach(option => {
+              option.style.borderColor = '#e5e7eb';
+            });
+            
+            // Default to Mexicano for new tournament
+            appState.tournamentType = 'mexicano';
+          } catch (error) {
+            console.error('Error handling new tournament click:', error);
+            alert('An error occurred while creating a new tournament. Please try again.');
+          }
         });
-        
-        // Default to Mexicano for new tournament
-        appState.tournamentType = 'mexicano';
-        
-        showScreen('setupScreen');
-      });
+      } else {
+        console.error('New Tournament button not found');
+      }
 
       // Player count range slider
       document.getElementById('playerCount').addEventListener('input', function() {
@@ -4192,9 +4639,16 @@
         savePlayer();
       });
       
-      // Close player modal
+      // Close player modal with animation
       document.getElementById('closePlayerModal').addEventListener('click', function() {
-        document.getElementById('playerModal').classList.remove('active');
+        const modal = document.getElementById('playerModal');
+        // First remove the active class to trigger the fade-out animation
+        modal.classList.remove('active');
+        
+        // After animation completes, hide the modal completely
+        setTimeout(() => {
+          modal.style.display = 'none';
+        }, 300);
       });
       
       // Setup Form Submit
@@ -4264,18 +4718,28 @@
         document.getElementById('startTournamentBtn').disabled = true;
       });
       
-      // Navigation Tabs
+      // Navigation Tabs with animation
       document.getElementById('roundsTab').addEventListener('click', function(e) {
         e.preventDefault();
         if (appState.currentTournament) {
-          showScreen('roundsScreen');
+          // Add subtle animation feedback
+          this.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            this.style.transform = 'none';
+            showScreen('roundsScreen');
+          }, 100);
         }
       });
       
       document.getElementById('leaderboardTab').addEventListener('click', function(e) {
         e.preventDefault();
         if (appState.currentTournament) {
-          showScreen('leaderboardScreen');
+          // Add subtle animation feedback
+          this.style.transform = 'scale(0.95)';
+          setTimeout(() => {
+            this.style.transform = 'none';
+            showScreen('leaderboardScreen');
+          }, 100);
         }
       });
 
@@ -4301,6 +4765,132 @@
       
       // Load tournaments and players on app start - no test data needed for production
     });
+  </script>
+  </div> <!-- Close page-container -->
+
+  <script>
+    // Mobile App-like Navigation with Consistent Animations
+    let currentScreen = 'tournamentListScreen';
+    let navigationHistory = [];
+
+    function navigateToScreen(screenId, addToHistory = true) {
+      const currentScreenEl = document.getElementById(currentScreen);
+      const nextScreenEl = document.getElementById(screenId);
+      
+      if (!nextScreenEl || currentScreen === screenId) return;
+
+      // Add to navigation history
+      if (addToHistory) {
+        navigationHistory.push(currentScreen);
+      }
+
+      // Apply consistent fade transitions for all screen changes
+      // First set up the next screen before animation
+      nextScreenEl.style.opacity = '0';
+      nextScreenEl.style.transform = 'none';
+      nextScreenEl.style.display = 'block';
+      nextScreenEl.classList.add('active');
+      
+      // Fade out current screen
+      currentScreenEl.style.transition = 'opacity 0.3s ease';
+      currentScreenEl.style.opacity = '0';
+      
+      // After a short delay, hide current and show next screen
+      setTimeout(() => {
+        currentScreenEl.classList.remove('active');
+        currentScreenEl.style.display = 'none';
+        
+        // Fade in next screen
+        nextScreenEl.style.transition = 'opacity 0.3s ease';
+        nextScreenEl.style.opacity = '1';
+        
+        // Update app state
+        currentScreen = screenId;
+        updateBackButton();
+        updateNavigation(screenId);
+        
+        // Jump to top
+        nextScreenEl.scrollTo(0, 0);
+      }, 300);
+    }
+
+    function navigateBack() {
+      if (navigationHistory.length > 0) {
+        const previousScreen = navigationHistory.pop();
+        navigateToScreen(previousScreen, false);
+      } else {
+        // If no history, toggle sidebar menu instead
+        toggleSidebar();
+      }
+    }
+
+    // No longer needed as we're using sidebar menu everywhere
+    function updateBackButton() {
+      // Keep function for compatibility but do nothing
+      // The back button will always be hidden
+    }
+
+    // Simplified click functionality (no animations)
+    function addTouchFeedback() {
+      const interactiveElements = document.querySelectorAll('button, .btn, .tournament-item, .card, .nav-item, .sidebar-menu-item, .leaderboard-item, .round-tab');
+      
+      interactiveElements.forEach(element => {
+        // Remove any existing transforms
+        element.style.transform = 'none';
+        
+        // Add simple active state by adding/removing class
+        element.addEventListener('touchstart', function(e) {
+          this.classList.add('active-touch');
+        }, { passive: true });
+        
+        element.addEventListener('touchend', function(e) {
+          this.classList.remove('active-touch');
+        }, { passive: true });
+        
+        element.addEventListener('touchcancel', function(e) {
+          this.classList.remove('active-touch');
+        }, { passive: true });
+      });
+    }
+
+    // Initialize mobile enhancements
+    document.addEventListener('DOMContentLoaded', function() {
+      addTouchFeedback();
+      
+      // We don't need to call updateBackButton since we're using sidebar everywhere
+      
+      // Update existing navigation calls to use new system
+      const backBtn = document.getElementById('backBtn');
+      if (backBtn) {
+        backBtn.addEventListener('click', toggleSidebar);
+      }
+      
+      // Override existing showScreen function
+      window.showScreen = navigateToScreen;
+      
+      // Set up stable scrolling
+      document.documentElement.style.scrollBehavior = 'auto';
+      
+      // Make all scrollable elements use standard scrolling
+      const scrollElements = document.querySelectorAll('.screen, .container, .sidebar-content');
+      scrollElements.forEach(element => {
+        element.style.webkitOverflowScrolling = 'auto';
+        element.style.overscrollBehavior = 'none';
+      });
+    });
+
+    // Add smooth scrolling behavior
+    document.documentElement.style.scrollBehavior = 'smooth';
+    
+    // Prevent zoom on double tap for iOS
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+      const now = (new Date()).getTime();
+      if (now - lastTouchEnd <= 300) {
+        event.preventDefault();
+      }
+      lastTouchEnd = now;
+    }, false);
   </script>
 </body>
 </html>
