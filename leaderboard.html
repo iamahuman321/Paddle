@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -723,7 +724,7 @@
   </div>
   
   <!-- Firebase App (the core Firebase SDK) -->
-  <script src="https://lib.youware.com/youware-lib-consumer.1752562065.js" id="yourware-lib"></script><script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://lib.youware.com/youware-lib-consumer.1752562065.js" id="yourware-lib"></script><script src="https://lib.youware.com/youware-lib-consumer.1752562065.js" id="yourware-lib"></script><script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
   <!-- Firebase Realtime Database -->
   <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
@@ -773,11 +774,15 @@
       // Setup dark mode toggle
       setupDarkMode();
       
+      console.log("URL Parameters - tournamentId:", tournamentId, "shareData:", shareData ? "present" : "none");
+      
       if (tournamentId) {
         // Direct tournament ID - load from Firebase
+        console.log("Loading tournament by ID:", tournamentId);
         loadTournamentById(tournamentId);
       } else if (shareData) {
         // Shared data via base64 - load directly
+        console.log("Loading shared tournament data");
         loadSharedTournament(shareData);
       } else {
         // No tournament specified
@@ -794,29 +799,118 @@
       
       const tournamentRef = firebaseDB.ref(`tournaments/${tournamentId}`);
       
-      // Initial load
-      tournamentRef.once('value')
+      // First load to check if PDF export data is available in another tournament
+      // Try to load the PDF export data from a special location if it exists
+      const pdfExportRef = firebaseDB.ref(`tournamentExports/${tournamentId}`);
+      let originalPlayerData = null;
+      
+      pdfExportRef.once('value')
         .then(snapshot => {
           if (snapshot.exists()) {
+            console.log("Found PDF export data for tournament:", tournamentId);
+            const exportData = snapshot.val();
+            if (exportData && exportData.players) {
+              originalPlayerData = exportData.players;
+              console.log("Using player scores from PDF export data");
+            }
+          } else {
+            console.log("No PDF export data found, will use tournament data directly");
+          }
+          
+          // Setup real-time updates for the actual tournament data
+          setupTournamentRealTimeUpdates(tournamentRef, tournamentId, originalPlayerData);
+        })
+        .catch(error => {
+          console.error("Error checking for PDF export data:", error);
+          // Continue with tournament data if PDF export check fails
+          setupTournamentRealTimeUpdates(tournamentRef, tournamentId, null);
+        });
+    }
+    
+    // Setup real-time updates for tournament data
+    function setupTournamentRealTimeUpdates(tournamentRef, tournamentId, originalPlayerData) {
+      if (isRealTimeUpdateEnabled) {
+        tournamentRef.on('value', snapshot => {
+          if (snapshot.exists()) {
             const data = snapshot.val();
+            // Ensure the tournament has the correct ID
+            data.id = tournamentId;
+            
+            // Apply PDF export scores if available
+            if (originalPlayerData && data.players) {
+              data.players = data.players.map(player => {
+                const exportPlayer = originalPlayerData.find(p => p.id === player.id);
+                if (exportPlayer) {
+                  return {
+                    ...player,
+                    score: exportPlayer.score,
+                    matchesWon: exportPlayer.matchesWon || player.matchesWon,
+                    matchesLost: exportPlayer.matchesLost || player.matchesLost,
+                    matchesTied: exportPlayer.matchesTied || player.matchesTied,
+                    pointsFor: exportPlayer.pointsFor || player.pointsFor,
+                    pointsAgainst: exportPlayer.pointsAgainst || player.pointsAgainst
+                  };
+                }
+                return player;
+              });
+            }
+            
             tournamentData = data;
             renderTournament(data);
             
-            // Setup real-time updates
-            if (isRealTimeUpdateEnabled) {
-              setupRealTimeUpdates(tournamentId);
+            // Hide loading on first successful load
+            if (loadingElement.style.display !== 'none') {
+              loadingElement.style.display = 'none';
+              tournamentContainer.style.display = 'block';
             }
           } else {
             showError("Tournament not found. It may have been deleted or you have an invalid link.");
           }
-        })
-        .catch(error => {
+        }, error => {
           console.error("Error loading tournament:", error);
           showError("Failed to load tournament data. Please try again later.");
         });
+      } else {
+        // Fallback to single load if real-time is disabled
+        tournamentRef.once('value')
+          .then(snapshot => {
+            if (snapshot.exists()) {
+              const data = snapshot.val();
+              data.id = tournamentId;
+              
+              // Apply PDF export scores if available
+              if (originalPlayerData && data.players) {
+                data.players = data.players.map(player => {
+                  const exportPlayer = originalPlayerData.find(p => p.id === player.id);
+                  if (exportPlayer) {
+                    return {
+                      ...player,
+                      score: exportPlayer.score,
+                      matchesWon: exportPlayer.matchesWon || player.matchesWon,
+                      matchesLost: exportPlayer.matchesLost || player.matchesLost,
+                      matchesTied: exportPlayer.matchesTied || player.matchesTied,
+                      pointsFor: exportPlayer.pointsFor || player.pointsFor,
+                      pointsAgainst: exportPlayer.pointsAgainst || player.pointsAgainst
+                    };
+                  }
+                  return player;
+                });
+              }
+              
+              tournamentData = data;
+              renderTournament(data);
+            } else {
+              showError("Tournament not found. It may have been deleted or you have an invalid link.");
+            }
+          })
+          .catch(error => {
+            console.error("Error loading tournament:", error);
+            showError("Failed to load tournament data. Please try again later.");
+          });
+      }
     }
     
-    // Setup real-time updates
+    // Setup real-time updates (kept for backwards compatibility but not used directly)
     function setupRealTimeUpdates(tournamentId) {
       if (!firebaseDB) return;
       
@@ -825,8 +919,11 @@
       tournamentRef.on('value', snapshot => {
         if (snapshot.exists()) {
           const data = snapshot.val();
+          // Ensure the tournament has the correct ID
+          data.id = tournamentId;
           tournamentData = data;
           renderTournament(data);
+          console.log("Real-time update received for tournament:", tournamentId);
         }
       }, error => {
         console.error("Error in real-time update:", error);
@@ -838,12 +935,55 @@
       try {
         // Decode and parse the shared data
         const data = JSON.parse(atob(shareData));
+        
+        // Store the original player data which has the correct scores from PDF export
+        const originalPlayerData = data.players ? [...data.players] : [];
+        
         tournamentData = data;
         renderTournament(data);
         
-        // Setup real-time updates if the tournament has an ID
+        // Setup real-time updates if the tournament has an ID and Firebase is available
         if (data.id && firebaseDB && isRealTimeUpdateEnabled) {
-          setupRealTimeUpdates(data.id);
+          console.log("Setting up real-time updates for shared tournament:", data.id);
+          const tournamentRef = firebaseDB.ref(`tournaments/${data.id}`);
+          
+          // Use real-time listener to get latest data
+          tournamentRef.on('value', snapshot => {
+            if (snapshot.exists()) {
+              const liveData = snapshot.val();
+              
+              // Ensure the tournament has the correct ID
+              liveData.id = data.id;
+              
+              // Important: Preserve original player scores from the share data (PDF export)
+              // while getting updated match information
+              if (liveData.players && originalPlayerData.length > 0) {
+                liveData.players = liveData.players.map(livePlayer => {
+                  const originalPlayer = originalPlayerData.find(p => p.id === livePlayer.id);
+                  if (originalPlayer) {
+                    // Keep original scores but update other data
+                    return {
+                      ...livePlayer,
+                      score: originalPlayer.score,
+                      matchesWon: originalPlayer.matchesWon,
+                      matchesLost: originalPlayer.matchesLost,
+                      matchesTied: originalPlayer.matchesTied,
+                      pointsFor: originalPlayer.pointsFor,
+                      pointsAgainst: originalPlayer.pointsAgainst
+                    };
+                  }
+                  return livePlayer;
+                });
+              }
+              
+              tournamentData = liveData;
+              renderTournament(liveData);
+              console.log("Tournament data updated from Firebase (preserving original scores)");
+            }
+          }, error => {
+            console.error("Error in real-time update for shared tournament:", error);
+            // Continue with static data if Firebase fails
+          });
         }
       } catch (error) {
         console.error("Error decoding shared data:", error);
@@ -865,8 +1005,12 @@
       document.getElementById('playerCount').textContent = tournament.players ? tournament.players.length : 0;
       document.getElementById('tournamentDate').textContent = tournament.createdAt ? new Date(tournament.createdAt).toLocaleDateString() : 'Unknown date';
       
-      // Calculate player stats if needed
+      // Use the stats from data source if available (PDF export data),
+      // only calculate if necessary
       const players = calculatePlayerStats(tournament.players, tournament.rounds);
+      
+      // Log player stats for debugging
+      console.log("Player scores:", players.map(p => `${p.name}: ${p.score}`).join(', '));
       
       // Render leaderboard
       renderLeaderboard(players);
@@ -885,13 +1029,23 @@
       
       leaderboardList.innerHTML = '';
       
-      // Sort players by score
+      // Sort players by score, preserving existing player order when scores are equal
       const sortedPlayers = [...players].sort((a, b) => {
+        // Primary sort by score
         if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0);
+        
+        // Secondary sort by point differential
         const aDiff = (a.pointsFor || 0) - (a.pointsAgainst || 0);
         const bDiff = (b.pointsFor || 0) - (b.pointsAgainst || 0);
         if (bDiff !== aDiff) return bDiff - aDiff;
-        return (b.pointsFor || 0) - (a.pointsFor || 0);
+        
+        // Tertiary sort by points for
+        if ((b.pointsFor || 0) !== (a.pointsFor || 0)) return (b.pointsFor || 0) - (a.pointsFor || 0);
+        
+        // If all stats are equal, preserve original order based on index
+        const aIndex = players.findIndex(p => p.id === a.id);
+        const bIndex = players.findIndex(p => p.id === b.id);
+        return aIndex - bIndex;
       });
       
       // Create leaderboard items
@@ -1132,12 +1286,30 @@
       });
     }
     
-    // Calculate player stats (fallback if needed)
+    // Handle player stats - prioritize existing data, only calculate as fallback
     function calculatePlayerStats(players, rounds) {
       if (!players || !rounds) return players;
       
       // Clone players to avoid modifying the original array
       const updatedPlayers = JSON.parse(JSON.stringify(players));
+      
+      // Check if players already have complete stats
+      const hasCompleteStats = updatedPlayers.every(player => 
+        player.score !== undefined && 
+        player.matchesPlayed !== undefined && 
+        player.matchesWon !== undefined && 
+        player.matchesLost !== undefined &&
+        player.pointsFor !== undefined &&
+        player.pointsAgainst !== undefined
+      );
+      
+      // If players already have complete stats, don't recalculate
+      if (hasCompleteStats) {
+        console.log("Using existing player stats from data source");
+        return updatedPlayers;
+      }
+      
+      console.log("Player stats incomplete, calculating from match data");
       
       // Reset stats for all players
       updatedPlayers.forEach(player => {
