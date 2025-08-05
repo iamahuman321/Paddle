@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padel Management Leaderboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏓</text></svg>">
+    <style>
+        :root {
+            --primary-color: #6A26CD;
+            /* Vibrant purple for headers */
+            --accent-color: #FCD34D;
+            /* Yellow for buttons */
+            --light-bg-color: #F8F9FA;
+            --card-bg-color: #FFFFFF;
+            --border-color: #E5E7EB;
+            --text-color: #1F2937;
+            --text-light: #6B7280;
+            --success-color: #10B981;
+            --danger-color: #EF4444;
+            --gradient-start: #6A26CD;
+            --gradient-end: #9254DE;
+            --shadow-color: rgba(106, 38, 205, 0.15);
+            /* Dark mode variables */
+            --dark-bg-color: #121212;
+            --dark-card-bg-color: #1E1E1E;
+            --dark-border-color: #2D2D2D;
+            --dark-text-color: #F0F0F0;
+            --dark-text-light: #CCCCCC;
+            --dark-header-color: #7E3AD7;
+            /* Brighter purple for dark mode headers */
+            --dark-accent-color: #FFD54F;
+            /* Brighter yellow for dark mode */
+            --dark-gradient-start: #4A148C;
+            --dark-gradient-end: #7E57C2;
+            --dark-shadow-color: rgba(126, 58, 215, 0.3);
+        }
+
+        body {
+            background-color: var(--light-bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body.dark-mode {
+            background-color: var(--dark-bg-color);
+            color: var(--dark-text-color);
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        body.dark-mode .header {
+            background: linear-gradient(135deg, var(--dark-gradient-start), var(--dark-gradient-end));
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-bg-color);
+            border-radius: 16px;
+            box-shadow: 0 6px 16px var(--shadow-color);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        body.dark-mode .card {
+            background-color: var(--dark-card-bg-color);
+            border: 1px solid var(--dark-border-color);
+            box-shadow: 0 6px 16px var(--dark-shadow-color);
+        }
+
+        .tournament-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tournament-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        body.dark-mode .tournament-name {
+            color: var(--dark-header-color);
+        }
+
+        .tournament-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .tournament-meta {
+            color: var(--dark-text-light);
+        }
+
+        .tournament-meta-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .tournament-meta-item i {
+            margin-right: 5px;
+        }
+
+        .leaderboard-title {
+            font-size: 1.5rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+        }
+
+        body.dark-mode .leaderboard-title {
+            color: var(--dark-text-color);
+        }
+
+        .leaderboard-title i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        body.dark-mode .leaderboard-title i {
+            color: var(--dark-header-color);
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            transition: background-color 0.2s ease;
+        }
+
+        body.dark-mode .leaderboard-item {
+            border-bottom-color: var(--dark-border-color);
+        }
+
+        .leaderboard-item:last-child {
+            border-bottom: none;
+        }
+
+        .leaderboard-item:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        body.dark-mode .leaderboard-item:hover {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .rank {
+            font-weight: bold;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, 0.05);
+            border-radius: 50%;
+            margin-right: 12px;
+            color: var(--text-color);
+        }
+
+        body.dark-mode .rank {
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--dark-text-color);
+        }
+
+        .leaderboard-item:first-child .rank {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        body.dark-mode .leaderboard-item:first-child .rank {
+            background-color: var(--dark-header-color);
+        }
+
+        .player-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .player-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-color);
+        }
+
+        body.dark-mode .player-name {
+            color: var(--dark-text-color);
+        }
+
+        .player-stats {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            display: flex;
+            gap: 1rem;
+        }
+
+        body.dark-mode .player-stats {
+            color: var(--dark-text-light);
+        }
+
+        .player-score {
+            text-align: right;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+
+        body.dark-mode .player-score {
+            color: var(--dark-header-color);
+        }
+
+        .score-label {
+            font-size: 0.7rem;
+            color: var(--text-light);
+            display: block;
+        }
+
+        body.dark-mode .score-label {
+            color: var(--dark-text-light);
+        }
+
+        .rounds-section {
+            margin-top: 2rem;
+        }
+
+        .round-title {
+            font-size: 1.25rem;
+            margin: 1.5rem 0 1rem;
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+
+        body.dark-mode .round-title {
+            color: var(--dark-text-color);
+            border-bottom-color: var(--dark-border-color);
+        }
+
+        .match-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode .match-card {
+            background-color: var(--dark-card-bg-color);
+            border: 1px solid var(--dark-border-color);
+            box-shadow: 0 2px 6px var(--dark-shadow-color);
+        }
+
+        .match-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        body.dark-mode .match-header {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .match-title {
+            font-weight: bold;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .match-title i {
+            margin-right: 5px;
+        }
+
+        body.dark-mode .match-title {
+            color: var(--dark-header-color);
+        }
+
+        .match-status {
+            background-color: rgba(106, 38, 205, 0.1);
+            color: var(--primary-color);
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+        }
+
+        body.dark-mode .match-status {
+            background-color: rgba(126, 58, 215, 0.2);
+            color: var(--dark-header-color);
+        }
+
+        .match-status.completed {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+        }
+
+        .match-teams {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .match-team {
+            flex: 1;
+            padding: 0.75rem;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.02);
+            border-radius: 8px;
+        }
+
+        body.dark-mode .match-team {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+
+        .team-a {
+            border-left: 3px solid var(--primary-color);
+        }
+
+        .team-b {
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .team-name {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+            color: var(--text-color);
+        }
+
+        body.dark-mode .team-name {
+            color: var(--dark-text-color);
+        }
+
+        .team-players {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .team-players {
+            color: var(--dark-text-light);
+        }
+
+        .match-score {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 0.75rem;
+        }
+
+        .score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-width: 40px;
+            text-align: center;
+        }
+
+        .score.winner {
+            color: var(--success-color);
+        }
+
+        .score-divider {
+            margin: 0 0.75rem;
+            color: var(--text-light);
+            font-weight: bold;
+        }
+
+        body.dark-mode .score-divider {
+            color: var(--dark-text-light);
+        }
+
+        .rest-card {
+            border: 2px dashed #FFB74D;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            background-color: rgba(255, 183, 77, 0.1);
+            text-align: center;
+            position: relative;
+        }
+
+        body.dark-mode .rest-card {
+            background-color: rgba(255, 183, 77, 0.05);
+            border-color: #B45309;
+        }
+
+        .rest-player {
+            font-weight: 600;
+            color: #B45309;
+            position: relative;
+            z-index: 1;
+        }
+
+        body.dark-mode .rest-player {
+            color: #FFB74D;
+        }
+
+        .rest-player i {
+            margin-right: 8px;
+            color: #F59E0B;
+        }
+
+        .rest-bonus {
+            font-size: 0.85rem;
+            color: #92400E;
+            margin-top: 0.5rem;
+            background-color: rgba(255, 255, 255, 0.5);
+            padding: 0.5rem;
+            border-radius: 8px;
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+        }
+
+        body.dark-mode .rest-bonus {
+            color: #FFB74D;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.25rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-block;
+            text-align: center;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            box-shadow: 0 2px 6px rgba(252, 211, 77, 0.3);
+        }
+
+        .btn:hover {
+            background-color: #F59E0B;
+            box-shadow: 0 2px 8px rgba(252, 211, 77, 0.4);
+        }
+
+        body.dark-mode .btn {
+            background-color: var(--dark-accent-color);
+            color: var(--dark-bg-color);
+            box-shadow: 0 2px 6px rgba(252, 211, 77, 0.2);
+        }
+
+        body.dark-mode .btn:hover {
+            background-color: #F59E0B;
+            box-shadow: 0 2px 8px rgba(252, 211, 77, 0.3);
+        }
+
+        .btn i {
+            margin-right: 6px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            margin-left: auto;
+        }
+
+        .toggle-label {
+            margin-right: 8px;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        body.dark-mode .toggle-label {
+            color: var(--dark-text-light);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 22px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 22px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--primary-color);
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px var(--primary-color);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(22px);
+        }
+
+        body.dark-mode input:checked+.slider {
+            background-color: var(--dark-header-color);
+        }
+
+        .loader {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 1rem;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: var(--primary-color);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        body.dark-mode .spinner {
+            border-color: rgba(255, 255, 255, 0.1);
+            border-left-color: var(--dark-header-color);
+        }
+
+        .error {
+            background-color: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid var(--danger-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 6px;
+            color: var(--danger-color);
+        }
+
+        body.dark-mode .error {
+            color: #FCA5A5;
+            border-left-color: #DC2626;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+
+        body.dark-mode .footer {
+            color: var(--dark-text-light);
+            border-top-color: var(--dark-border-color);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 640px) {
+            .tournament-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .match-teams {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .player-stats {
+                flex-direction: column;
+                gap: 0.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        <h1>Padel Management Leaderboard</h1>
+    </div>
+    <div class="container">
+        <div id="loading" class="loader">
+            <div class="spinner"></div>
+            <div>Loading tournament data...</div>
+        </div>
+        <div id="errorContainer" class="error" style="display: none;"></div>
+        <div id="tournamentContainer" style="display: none;">
+            <div class="card">
+                <div class="tournament-header">
+                    <div>
+                        <div class="tournament-name" id="tournamentName">Tournament Name</div>
+                        <div class="tournament-meta">
+                            <div class="tournament-meta-item"> <i class="fas fa-tag"></i> <span id="tournamentType">Mexicano</span> </div>
+                            <div class="tournament-meta-item"> <i class="fas fa-users"></i> <span id="playerCount">0 players</span> </div>
+                            <div class="tournament-meta-item"> <i class="fas fa-calendar"></i> <span id="tournamentDate">Date</span> </div>
+                        </div>
+                    </div>
+                    <div class="toggle-switch"> <span class="toggle-label">Dark Mode</span> <label class="switch"> <input type="checkbox" id="darkModeToggle"> <span class="slider"></span> </label> </div>
+                </div>
+                <div class="leaderboard-title"> <i class="fas fa-trophy"></i> Leaderboard </div>
+                <div id="leaderboardList"></div>
+            </div>
+            <div id="roundsContainer" class="rounds-section"></div>
+            <div class="actions"> <a href="#" id="viewOriginalBtn" class="btn"> <i class="fas fa-external-link-alt"></i> View in App </a> </div>
+            <div class="footer"> Powered by Padel Management Tournament System<br> <small>Live updating leaderboard</small> </div>
+        </div>
+    </div> <!-- Firebase App (the core Firebase SDK) -->
+    <script src="https://lib.youware.com/youware-lib-consumer.1752562065.js" id="yourware-lib"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script> <!-- Firebase Realtime Database -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <script>
+        // Firebase configuration - same as the main app const firebaseConfig = { apiKey: "AIzaSyDymQBpzDKLOyMAiAHTY-lFcPGc2zuMgbg", authDomain: "paddle-e3c7f.firebaseapp.com", databaseURL: "https://paddle-e3c7f-default-rtdb.europe-west1.firebasedatabase.app", projectId: "paddle-e3c7f", storageBucket: "paddle-e3c7f.firebasestorage.app", messagingSenderId: "270747215285", appId: "1:270747215285:web:9068d56bdafe6d21a7e5fc", measurementId: "G-ZT3WBVF8M5" }; // Tournament data and state let tournamentData = null; let firebaseDB = null; let isRealTimeUpdateEnabled = true; // DOM elements const loadingElement = document.getElementById('loading'); const errorContainer = document.getElementById('errorContainer'); const tournamentContainer = document.getElementById('tournamentContainer'); const leaderboardList = document.getElementById('leaderboardList'); const roundsContainer = document.getElementById('roundsContainer'); const darkModeToggle = document.getElementById('darkModeToggle'); const viewOriginalBtn = document.getElementById('viewOriginalBtn'); // Initialize page document.addEventListener('DOMContentLoaded', function() { // Parse URL parameters const urlParams = new URLSearchParams(window.location.search); const tournamentId = urlParams.get('id'); const shareData = urlParams.get('share'); // Initialize Firebase try { firebase.initializeApp(firebaseConfig); firebaseDB = firebase.database(); console.log("Firebase initialized successfully"); } catch (error) { console.error("Firebase initialization error:", error); } // Setup dark mode toggle setupDarkMode(); if (tournamentId) { // Direct tournament ID - load from Firebase loadTournamentById(tournamentId); } else if (shareData) { // Shared data via base64 - load directly loadSharedTournament(shareData); } else { // No tournament specified showError("No tournament specified. Please provide a valid tournament ID or share data."); } }); // Load tournament by ID (from Firebase) function loadTournamentById(tournamentId) { if (!firebaseDB) { showError("Firebase is not available. Please try again later."); return; } const tournamentRef = firebaseDB.ref(`tournaments/${tournamentId}`); // Initial load tournamentRef.once('value') .then(snapshot => { if (snapshot.exists()) { const data = snapshot.val(); tournamentData = data; renderTournament(data); // Setup real-time updates if (isRealTimeUpdateEnabled) { setupRealTimeUpdates(tournamentId); } } else { showError("Tournament not found. It may have been deleted or you have an invalid link."); } }) .catch(error => { console.error("Error loading tournament:", error); showError("Failed to load tournament data. Please try again later."); }); } // Setup real-time updates function setupRealTimeUpdates(tournamentId) { if (!firebaseDB) return; const tournamentRef = firebaseDB.ref(`tournaments/${tournamentId}`); tournamentRef.on('value', snapshot => { if (snapshot.exists()) { const data = snapshot.val(); tournamentData = data; renderTournament(data); } }, error => { console.error("Error in real-time update:", error); }); } // Load tournament from shared data (base64 encoded) function loadSharedTournament(shareData) { try { // Decode and parse the shared data const data = JSON.parse(atob(shareData)); tournamentData = data; renderTournament(data); // Setup real-time updates if the tournament has an ID if (data.id && firebaseDB && isRealTimeUpdateEnabled) { setupRealTimeUpdates(data.id); } } catch (error) { console.error("Error decoding shared data:", error); showError("Invalid share data. The link may be corrupted or incomplete."); } } // Render the tournament data function renderTournament(tournament) { if (!tournament) return; // Update the view original button const appUrl = window.location.origin + window.location.pathname.replace('leaderboard.html', 'index.html'); viewOriginalBtn.href = `${appUrl}?id=${tournament.id || ''}`; // Update tournament info document.getElementById('tournamentName').textContent = tournament.name || 'Unnamed Tournament'; document.getElementById('tournamentType').textContent = tournament.type || 'Mexicano'; document.getElementById('playerCount').textContent = `${tournament.players ? tournament.players.length : 0} players`; document.getElementById('tournamentDate').textContent = tournament.createdAt ? new Date(tournament.createdAt).toLocaleDateString() : 'Unknown date'; // Render leaderboard renderLeaderboard(tournament); // Render rounds renderRounds(tournament); // Show the tournament container and hide loading loadingElement.style.display = 'none'; tournamentContainer.style.display = 'block'; } // Render the leaderboard function renderLeaderboard(tournament) { if (!tournament || !tournament.players) return; leaderboardList.innerHTML = ''; // Sort players by score const sortedPlayers = [...tournament.players].sort((a, b) => { if ((b.score || 0) !== (a.score || 0)) return (b.score || 0) - (a.score || 0); const aDiff = (a.pointsFor || 0) - (a.pointsAgainst || 0); const bDiff = (b.pointsFor || 0) - (b.pointsAgainst || 0); if (bDiff !== aDiff) return bDiff - aDiff; return (b.pointsFor || 0) - (a.pointsFor || 0); }); // Create leaderboard items sortedPlayers.forEach((player, index) => { const leaderboardItem = document.createElement('div'); leaderboardItem.className = 'leaderboard-item'; const playerInfo = document.createElement('div'); playerInfo.className = 'player-info'; playerInfo.style.display = 'flex'; playerInfo.style.alignItems = 'center'; const rank = document.createElement('div'); rank.className = 'rank'; rank.textContent = index + 1; const nameStatsDiv = document.createElement('div'); const playerName = document.createElement('div'); playerName.className = 'player-name'; playerName.textContent = player.name; const playerStats = document.createElement('div'); playerStats.className = 'player-stats'; const matchesPlayed = document.createElement('span'); matchesPlayed.innerHTML = `<i class="fas fa-gamepad"></i> ${player.matchesPlayed || 0} matches`; const record = document.createElement('span'); record.innerHTML = `<i class="fas fa-chart-line"></i> ${player.matchesWon || 0}W-${player.matchesLost || 0}L-${player.matchesTied || 0}T`; const pointDiff = (player.pointsFor || 0) - (player.pointsAgainst || 0); const diffPrefix = pointDiff >= 0 ? '+' : ''; const pointDiffSpan = document.createElement('span'); pointDiffSpan.innerHTML = `<i class="fas fa-balance-scale"></i> ${diffPrefix}${pointDiff}`; playerStats.appendChild(matchesPlayed); playerStats.appendChild(record); playerStats.appendChild(pointDiffSpan); nameStatsDiv.appendChild(playerName); nameStatsDiv.appendChild(playerStats); playerInfo.appendChild(rank); playerInfo.appendChild(nameStatsDiv); const scoreDiv = document.createElement('div'); scoreDiv.className = 'player-score'; scoreDiv.innerHTML = ` ${player.score || 0} <span class="score-label">points</span> `; leaderboardItem.appendChild(playerInfo); leaderboardItem.appendChild(scoreDiv); leaderboardList.appendChild(leaderboardItem); }); } // Render tournament rounds function renderRounds(tournament) { if (!tournament || !tournament.rounds) return; roundsContainer.innerHTML = ''; tournament.rounds.forEach((round, roundIndex) => { const roundSection = document.createElement('div'); roundSection.className = 'card'; const roundTitle = document.createElement('div'); roundTitle.className = 'round-title'; roundTitle.textContent = `Round ${roundIndex + 1}`; roundSection.appendChild(roundTitle); // Show resting players if (round.restingPlayers && round.restingPlayers.length > 0) { const restCard = document.createElement('div'); restCard.className = 'rest-card'; const restingPlayerNames = round.restingPlayers.map(playerId => tournament.players.find(p => p.id === playerId)?.name || 'Unknown' ); restCard.innerHTML = ` <div class="rest-player"> <i class="fas fa-chair"></i> Resting: ${restingPlayerNames.join(', ')} </div> <div class="rest-bonus">+10 bonus points per rest</div> `; roundSection.appendChild(restCard); } // Show matches round.matches.forEach(match => { const teamAPlayers = match.teamA.map(playerId => tournament.players.find(p => p.id === playerId)?.name || 'Unknown' ); const teamBPlayers = match.teamB.map(playerId => tournament.players.find(p => p.id === playerId)?.name || 'Unknown' ); const matchCard = document.createElement('div'); matchCard.className = 'match-card'; const matchHeader = document.createElement('div'); matchHeader.className = 'match-header'; const matchTitle = document.createElement('div'); matchTitle.className = 'match-title'; matchTitle.innerHTML = `<i class="fas fa-table-tennis"></i> Court ${match.courtNumber}`; const matchStatus = document.createElement('div'); matchStatus.className = match.completed ? 'match-status completed' : 'match-status'; matchStatus.textContent = match.completed ? 'Completed' : 'In Progress'; matchHeader.appendChild(matchTitle); matchHeader.appendChild(matchStatus); matchCard.appendChild(matchHeader); // Match teams const teamsDiv = document.createElement('div'); teamsDiv.className = 'match-teams'; const teamA = document.createElement('div'); teamA.className = 'match-team team-a'; teamA.innerHTML = ` <div class="team-name">Team A</div> <div class="team-players">${teamAPlayers.join(' & ')}</div> `; const teamB = document.createElement('div'); teamB.className = 'match-team team-b'; teamB.innerHTML = ` <div class="team-name">Team B</div> <div class="team-players">${teamBPlayers.join(' & ')}</div> `; teamsDiv.appendChild(teamA); teamsDiv.appendChild(teamB); matchCard.appendChild(teamsDiv); // Match score if (match.completed) { const scoreDiv = document.createElement('div'); scoreDiv.className = 'match-score'; const scoreA = document.createElement('div'); scoreA.className = match.scoreA > match.scoreB ? 'score winner' : 'score'; scoreA.textContent = match.scoreA; const divider = document.createElement('div'); divider.className = 'score-divider'; divider.textContent = 'vs'; const scoreB = document.createElement('div'); scoreB.className = match.scoreB > match.scoreA ? 'score winner' : 'score'; scoreB.textContent = match.scoreB; scoreDiv.appendChild(scoreA); scoreDiv.appendChild(divider); scoreDiv.appendChild(scoreB); matchCard.appendChild(scoreDiv); } else { const pendingDiv = document.createElement('div'); pendingDiv.style.textAlign = 'center'; pendingDiv.style.padding = '0.75rem'; pendingDiv.style.color = 'var(--text-light)'; pendingDiv.style.fontStyle = 'italic'; pendingDiv.textContent = 'Score not yet available'; matchCard.appendChild(pendingDiv); } roundSection.appendChild(matchCard); }); roundsContainer.appendChild(roundSection); }); } // Show error message function showError(message) { loadingElement.style.display = 'none'; errorContainer.style.display = 'block'; errorContainer.textContent = message; } // Setup dark mode toggle function setupDarkMode() { // Check for saved preference const isDarkMode = localStorage.getItem('darkMode') === 'true'; // Apply saved preference if (isDarkMode) { document.body.classList.add('dark-mode'); darkModeToggle.checked = true; } // Add toggle event listener darkModeToggle.addEventListener('change', function() { document.body.classList.toggle('dark-mode'); localStorage.setItem('darkMode', this.checked); }); } // Calculate player stats (fallback if needed) function calculatePlayerStats(players, rounds) { if (!players || !rounds) return players; // Reset stats players.forEach(player => { player.score = 0; player.matchesPlayed = 0; player.matchesWon = 0; player.matchesLost = 0; player.matchesTied = 0; player.pointsFor = 0; player.pointsAgainst = 0; player.restsCount = 0; }); // Process rounds rounds.forEach(round => { // Process matches round.matches.forEach(match => { if (!match.completed) return; // Process team A match.teamA.forEach(playerId => { const player = players.find(p => p.id === playerId); if (!player) return; player.matchesPlayed++; player.pointsFor += match.scoreA; player.pointsAgainst += match.scoreB; if (match.scoreA > match.scoreB) { player.matchesWon++; player.score += 3; // Win = 3 points } else if (match.scoreA < match.scoreB) { player.matchesLost++; player.score += 1; // Loss = 1 point } else { player.matchesTied++; player.score += 2; // Tie = 2 points } }); // Process team B match.teamB.forEach(playerId => { const player = players.find(p => p.id === playerId); if (!player) return; player.matchesPlayed++; player.pointsFor += match.scoreB; player.pointsAgainst += match.scoreA; if (match.scoreB > match.scoreA) { player.matchesWon++; player.score += 3; // Win = 3 points } else if (match.scoreB < match.scoreA) { player.matchesLost++; player.score += 1; // Loss = 1 point } else { player.matchesTied++; player.score += 2; // Tie = 2 points } }); }); // Process resting players if (round.restingPlayers) { round.restingPlayers.forEach(playerId => { const player = players.find(p => p.id === playerId); if (!player) return; player.restsCount = (player.restsCount || 0) + 1; player.score += 10; // Rest bonus = 10 points }); } }); return players; } 
+    </script>
+</body>
+
+</html>
