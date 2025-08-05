@@ -5277,14 +5277,16 @@
         const base64Data = btoa(JSON.stringify(shareableData));
         
         // Create shareable URL pointing to the standalone leaderboard page
-        const baseUrl = window.location.origin + window.location.pathname.replace('index.html', '');
-        const shareUrl = `${baseUrl}leaderboard.html?share=${base64Data}`;
+        // Use a more robust URL construction that works both locally and when deployed
+        const currentUrl = window.location.href;
+        const currentPath = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
+        const shareUrl = `${currentPath}leaderboard.html?share=${base64Data}`;
         
         // Check if the URL is too long (CloudFront has a limit around 8KB)
         if (shareUrl.length > 7000) {
           // For very large tournaments, try sharing just the ID instead
           if (tournament.id) {
-            const idShareUrl = `${baseUrl}leaderboard.html?id=${tournament.id}`;
+            const idShareUrl = `${currentPath}leaderboard.html?id=${tournament.id}`;
             alert('Tournament data is very large. Sharing a direct link instead of full data.');
             shareWithUrl(idShareUrl, tournament.name);
             return;
