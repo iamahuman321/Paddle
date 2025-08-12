@@ -1,0 +1,99 @@
+{
+  "name": "Padel Tournament Manager",
+  "short_name": "PadelTM",
+  "description": "The ultimate padel tennis tournament organizer. Create tournaments, track scores, manage players, and share results instantly. Perfect for clubs, coaches, and padel enthusiasts.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1e3a8a",
+  "theme_color": "#1e3a8a",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["sports", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "icons/app-logo-original.jpeg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/app-logo-original.jpeg",
+      "sizes": "384x384",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/app-logo-original.jpeg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/app-logo-original.jpeg",
+      "sizes": "152x152",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/app-logo-original.jpeg",
+      "sizes": "144x144",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/app-logo-original.jpeg",
+      "sizes": "128x128",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/app-logo-original.jpeg",
+      "sizes": "96x96",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icons/app-logo-original.jpeg",
+      "sizes": "72x72",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "screenshots/mobile-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screenshots/mobile-tournament.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screenshots/tablet-home.png",
+      "sizes": "768x1024",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "New Tournament",
+      "short_name": "New",
+      "description": "Create a new padel tournament",
+      "url": "/?action=new-tournament",
+      "icons": [{"src": "icons/app-logo-original.jpeg", "sizes": "96x96"}]
+    },
+    {
+      "name": "Leaderboard",
+      "short_name": "Scores",
+      "description": "View tournament leaderboard",
+      "url": "/leaderboard.html",
+      "icons": [{"src": "icons/app-logo-original.jpeg", "sizes": "96x96"}]
+    }
+  ]
+}
